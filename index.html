@@ -1321,12 +1321,15 @@
         <span data-i18n="nl">Laten we iets<br><span class="grad">groots bouwen.</span></span>
         <span data-i18n="ru">Давайте создадим<br><span class="grad">что-то великое.</span></span>
       </h2>
-      <form class="contact-form rv" id="contactForm">
+      <form class="contact-form rv" id="contactForm" action="https://formspree.io/f/vellumcadence@gmail.com" method="POST">
+        <input type="hidden" name="_subject" value="New lead from VellumCadence Studio" />
+        <input type="hidden" name="_next" value="https://tradervd9.github.io/web-studio/#contact" />
+        <input type="text" name="_gotcha" style="display:none" />
         <div class="form-row">
-          <input type="text" id="f-name" data-ph-en="Name" data-ph-nl="Naam" data-ph-ru="Имя" required />
-          <input type="email" id="f-email" data-ph-en="Email" data-ph-nl="E-mail" data-ph-ru="Эл. почта" required />
+          <input type="text" name="name" id="f-name" data-ph-en="Name" data-ph-nl="Naam" data-ph-ru="Имя" required />
+          <input type="email" name="email" id="f-email" data-ph-en="Email" data-ph-nl="E-mail" data-ph-ru="Эл. почта" required />
         </div>
-        <select id="f-service">
+        <select name="service" id="f-service">
           <option value="" disabled selected data-ph-en="Select service" data-ph-nl="Selecteer dienst" data-ph-ru="Выберите услугу"></option>
           <option value="website">Custom Website</option>
           <option value="ecommerce">E-Commerce</option>
@@ -1334,14 +1337,14 @@
           <option value="ai">AI Solution</option>
           <option value="other" data-i18n="en">Other</option><option value="other" data-i18n="nl">Anders</option><option value="other" data-i18n="ru">Другое</option>
         </select>
-        <select id="f-budget">
+        <select name="budget" id="f-budget">
           <option value="" disabled selected data-ph-en="Budget range" data-ph-nl="Budget" data-ph-ru="Бюджет"></option>
           <option>&euro;2,500 - &euro;5,000</option>
           <option>&euro;5,000 - &euro;10,000</option>
           <option>&euro;10,000 - &euro;20,000</option>
           <option>&euro;20,000+</option>
         </select>
-        <textarea id="f-msg" rows="4" data-ph-en="Tell us about your project..." data-ph-nl="Vertel ons over uw project..." data-ph-ru="Расскажите о вашем проекте..."></textarea>
+        <textarea name="message" id="f-msg" rows="4" data-ph-en="Tell us about your project..." data-ph-nl="Vertel ons over uw project..." data-ph-ru="Расскажите о вашем проекте..."></textarea>
         <button type="submit" class="btn btn-w" style="width:100%;justify-content:center" data-i18n="en">Send Message</button>
         <button type="submit" class="btn btn-w" style="width:100%;justify-content:center" data-i18n="nl">Bericht Versturen</button>
         <button type="submit" class="btn btn-w" style="width:100%;justify-content:center" data-i18n="ru">Отправить</button>
@@ -1590,20 +1593,40 @@
     }
 
     // ===== CONTACT FORM =====
-    document.getElementById('contactForm').addEventListener('submit', function(e) {
+    document.getElementById('contactForm').addEventListener('submit', async function(e) {
       e.preventDefault();
+      const form = this;
       const msg = document.getElementById('form-msg');
       const lang = localStorage.getItem('vc_lang') || 'en';
-      const msgs = {
-        en: 'Message sent! We will contact you within 24 hours.',
-        nl: 'Bericht verzonden! We nemen binnen 24 uur contact met u op.',
-        ru: 'Сообщение отправлено! Мы свяжемся с вами в течение 24 часов.'
-      };
-      msg.textContent = msgs[lang];
+      const submitBtns = form.querySelectorAll('button[type="submit"]');
+      submitBtns.forEach(b => b.disabled = true);
+
+      try {
+        const res = await fetch(form.action, {
+          method: 'POST',
+          body: new FormData(form),
+          headers: { 'Accept': 'application/json' }
+        });
+        if (res.ok) {
+          const msgs = {
+            en: 'Message sent! We will contact you within 24 hours.',
+            nl: 'Bericht verzonden! We nemen binnen 24 uur contact met u op.',
+            ru: 'Сообщение отправлено! Мы свяжемся с вами в течение 24 часов.'
+          };
+          msg.textContent = msgs[lang];
+          msg.style.color = '#22c55e';
+          form.reset();
+        } else {
+          throw new Error('Server error');
+        }
+      } catch {
+        const errs = { en: 'Failed to send. Try again.', nl: 'Verzenden mislukt. Probeer opnieuw.', ru: 'Ошибка отправки. Попробуйте ещё раз.' };
+        msg.textContent = errs[lang];
+        msg.style.color = '#ef4444';
+      }
       msg.style.display = 'block';
-      msg.style.color = '#22c55e';
-      this.reset();
-      setTimeout(() => { msg.style.display = 'none'; }, 5000);
+      submitBtns.forEach(b => b.disabled = false);
+      setTimeout(() => { msg.style.display = 'none'; }, 6000);
     });
 
     // ===== DYNAMIC DATA FROM ADMIN =====
