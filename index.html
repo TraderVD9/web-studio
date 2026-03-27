@@ -11,6 +11,7 @@
   <meta property="og:url" content="https://tradervd9.github.io/web-studio/">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="canonical" href="https://tradervd9.github.io/web-studio/">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <style>
     :root {
       --text-white: #f5f5f7;
@@ -972,6 +973,43 @@
       .cursor { display: none; }
       body { cursor: auto; }
     }
+
+    /* Cookie consent */
+    .cookie-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 99998;
+      background: rgba(10,10,20,0.95);
+      backdrop-filter: blur(20px);
+      border-top: 1px solid rgba(255,255,255,0.06);
+      padding: 16px 24px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      font-size: 13px;
+      color: var(--text-dim);
+    }
+    .cookie-bar.show { display: flex; }
+    .cookie-bar a { color: var(--link); text-decoration: none; }
+    .cookie-bar a:hover { text-decoration: underline; }
+    .cookie-bar button {
+      background: rgba(255,255,255,0.08);
+      color: var(--text-white);
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 8px 20px;
+      border-radius: 980px;
+      font-family: inherit;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .cookie-bar button:hover {
+      background: rgba(255,255,255,0.14);
+    }
   </style>
 </head>
 <body>
@@ -1726,6 +1764,49 @@
         }
       } catch(e) { console.log('Admin data load:', e); }
     })();
+  </script>
+  <!-- Cookie Consent -->
+  <div class="cookie-bar" id="cookieBar">
+    <span data-i18n="en">We use cookies to improve your experience.</span>
+    <span data-i18n="nl">We gebruiken cookies om uw ervaring te verbeteren.</span>
+    <span data-i18n="ru">Мы используем cookies для улучшения вашего опыта.</span>
+    <button onclick="acceptCookies()">OK</button>
+  </div>
+  <script>
+    if (!localStorage.getItem('vc_cookies_ok')) {
+      document.getElementById('cookieBar').classList.add('show');
+    }
+    function acceptCookies() {
+      localStorage.setItem('vc_cookies_ok', '1');
+      document.getElementById('cookieBar').classList.remove('show');
+    }
+  </script>
+
+  <!-- Structured Data: FAQ -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {"@type": "Question", "name": "How long does it take to build a website?", "acceptedAnswer": {"@type": "Answer", "text": "Landing pages: 1-2 weeks. Business sites: 3-4 weeks. E-commerce and web apps: 6-12 weeks."}},
+      {"@type": "Question", "name": "What do you need from me?", "acceptedAnswer": {"@type": "Answer", "text": "Brand assets, content, and goals. We help with branding and copywriting too."}},
+      {"@type": "Question", "name": "Do you offer hosting and maintenance?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. From €99/month — updates, backups, security, and minor changes included."}},
+      {"@type": "Question", "name": "What is the payment structure?", "acceptedAnswer": {"@type": "Answer", "text": "50% upfront, 50% on completion. Milestone-based for larger projects."}}
+    ]
+  }
+  </script>
+
+  <!-- Structured Data: Organization -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "VellumCadence",
+    "url": "https://vellumcadence.com",
+    "description": "Premium web development studio based in the Netherlands",
+    "areaServed": ["NL", "DE", "AT", "CH"],
+    "serviceType": ["Web Development", "E-Commerce", "Web Applications", "AI Solutions"]
+  }
   </script>
 </body>
 </html>
