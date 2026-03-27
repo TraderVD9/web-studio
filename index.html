@@ -1,0 +1,1534 @@
+<!DOCTYPE html>
+<html lang="en" data-lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5">
+  <title>VellumCadence — Premium Web Development Studio</title>
+  <meta name="description" content="We craft premium websites that convert. Custom design, development, and AI-powered solutions for ambitious brands.">
+  <style>
+    :root {
+      --text-white: #f5f5f7;
+      --text-dim: rgba(245,245,247,0.5);
+      --text-soft: rgba(245,245,247,0.7);
+      --text-muted: rgba(245,245,247,0.3);
+      --bg: #050510;
+      --glass: rgba(255,255,255,0.03);
+      --glass-border: rgba(255,255,255,0.06);
+      --glass-hover: rgba(255,255,255,0.06);
+      --glass-border-hover: rgba(255,255,255,0.12);
+      --accent: #8b5cf6;
+      --accent-gradient: linear-gradient(94deg, #0090f7, #ba62fc, #f2416b, #f55600);
+      --link: #2997ff;
+      --btn-bg: #0071e3;
+      --btn-hover: #0077ed;
+      --nav-h: 48px;
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html {
+      font-size: 17px;
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      font-family: -apple-system, "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+      color: var(--text-white);
+      background: var(--bg);
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* ===== CUSTOM CURSOR ===== */
+    .cursor {
+      position: fixed;
+      width: 20px; height: 20px;
+      border: 1.5px solid rgba(255,255,255,0.5);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 99999;
+      transition: width 0.2s var(--ease), height 0.2s var(--ease),
+                  border-color 0.2s, background 0.2s, transform 0.05s linear;
+      transform: translate(-50%, -50%);
+      mix-blend-mode: difference;
+    }
+
+    .cursor.hover {
+      width: 48px; height: 48px;
+      background: rgba(255,255,255,0.08);
+      border-color: rgba(139,92,246,0.6);
+    }
+
+    /* ===== CANVAS BG ===== */
+    #bgCanvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Grain */
+    .grain {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      animation: gr 0.5s steps(6) infinite;
+    }
+    @keyframes gr {
+      0%{transform:translate(0)}20%{transform:translate(-5%,5%)}40%{transform:translate(-8%,2%)}
+      60%{transform:translate(4%,-3%)}80%{transform:translate(6%,7%)}100%{transform:translate(0)}
+    }
+
+    /* ===== CONTENT ===== */
+    .content { position: relative; z-index: 2; }
+
+    /* ===== NAV ===== */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: var(--nav-h);
+      z-index: 9999;
+      background: rgba(5,5,16,0.5);
+      backdrop-filter: saturate(180%) blur(24px);
+      -webkit-backdrop-filter: saturate(180%) blur(24px);
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .nav-inner {
+      width: 100%;
+      max-width: 1100px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+    }
+
+    .nav-logo {
+      font-size: 17px; font-weight: 600;
+      color: var(--text-white);
+      text-decoration: none;
+      letter-spacing: -0.01em;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: rgba(245,245,247,0.55);
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 400;
+      transition: color 0.15s;
+    }
+
+    .nav-links a:hover { color: #fff; }
+
+    .nav-cta {
+      background: rgba(255,255,255,0.08) !important;
+      color: #fff !important;
+      padding: 6px 16px;
+      border-radius: 980px;
+      border: 1px solid rgba(255,255,255,0.08);
+      transition: all 0.2s !important;
+    }
+
+    .nav-cta:hover {
+      background: rgba(255,255,255,0.14) !important;
+      border-color: rgba(255,255,255,0.18);
+    }
+
+    /* Language switcher */
+    .lang-switch {
+      display: flex;
+      gap: 2px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 980px;
+      padding: 2px;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .lang-btn {
+      background: none;
+      border: none;
+      color: rgba(245,245,247,0.4);
+      font-size: 11px;
+      font-family: inherit;
+      padding: 4px 10px;
+      border-radius: 980px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-weight: 500;
+    }
+
+    .lang-btn.active {
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+    }
+
+    .lang-btn:hover:not(.active) { color: rgba(245,245,247,0.7); }
+
+    .burger {
+      display: none;
+      background: none; border: none;
+      cursor: pointer; padding: 8px;
+    }
+    .burger svg { fill: #fff; }
+
+    /* ===== TYPOGRAPHY ===== */
+    .h-xl {
+      font-size: clamp(44px, 8vw, 88px);
+      line-height: 1.04;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    .h-lg {
+      font-size: clamp(32px, 5vw, 56px);
+      line-height: 1.07;
+      font-weight: 600;
+      letter-spacing: -0.005em;
+    }
+
+    .h-md {
+      font-size: clamp(24px, 3.5vw, 40px);
+      line-height: 1.1;
+      font-weight: 600;
+      letter-spacing: -0.003em;
+    }
+
+    .sub {
+      font-size: clamp(17px, 2vw, 24px);
+      line-height: 1.3;
+      font-weight: 400;
+      letter-spacing: 0.007em;
+      margin-top: 8px;
+    }
+
+    .sub-sm {
+      font-size: clamp(15px, 1.5vw, 19px);
+      line-height: 1.35;
+      font-weight: 400;
+      letter-spacing: 0.011em;
+      margin-top: 6px;
+    }
+
+    .caption {
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+    }
+
+    .grad {
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    /* ===== BUTTONS ===== */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 980px;
+      font-size: 16px;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      padding: 13px 28px;
+      text-decoration: none;
+      transition: all 0.25s var(--ease);
+      cursor: none;
+      border: none;
+      font-family: inherit;
+    }
+
+    .btn-w {
+      background: #fff;
+      color: #000;
+    }
+
+    .btn-w:hover {
+      background: rgba(255,255,255,0.85);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(255,255,255,0.1);
+    }
+
+    .btn-g {
+      background: rgba(255,255,255,0.05);
+      color: var(--text-white);
+      border: 1px solid rgba(255,255,255,0.08);
+      backdrop-filter: blur(10px);
+    }
+
+    .btn-g:hover {
+      background: rgba(255,255,255,0.09);
+      border-color: rgba(255,255,255,0.16);
+      transform: translateY(-2px);
+    }
+
+    .btn-p {
+      background: var(--btn-bg);
+      color: #fff;
+    }
+
+    .btn-p:hover {
+      background: var(--btn-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(0,113,227,0.3);
+    }
+
+    .cta-row {
+      display: flex;
+      gap: 14px;
+      margin-top: 28px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* ===== SECTIONS ===== */
+    .sec {
+      padding: clamp(80px, 12vw, 160px) clamp(16px, 4vw, 40px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .divider {
+      width: min(1060px, 90%);
+      height: 1px;
+      background: rgba(255,255,255,0.05);
+      margin: 0 auto;
+    }
+
+    /* ===== HERO ===== */
+    .hero {
+      min-height: 100vh;
+      min-height: 100dvh;
+      justify-content: center;
+      padding-top: 100px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 18px;
+      border-radius: 980px;
+      border: 1px solid rgba(255,255,255,0.06);
+      background: rgba(255,255,255,0.03);
+      font-size: 13px;
+      color: rgba(245,245,247,0.5);
+      margin-bottom: 36px;
+      backdrop-filter: blur(8px);
+    }
+
+    .badge .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #22c55e;
+      box-shadow: 0 0 8px rgba(34,197,94,0.6);
+      animation: blink 2s infinite;
+    }
+
+    @keyframes blink {
+      0%,100%{opacity:1}50%{opacity:.3}
+    }
+
+    .stats {
+      display: flex;
+      gap: clamp(28px, 5vw, 64px);
+      margin-top: 72px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .stat-n {
+      font-size: clamp(28px, 4vw, 44px);
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+
+    .stat-l {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* ===== 3D TILT CARDS ===== */
+    .card-3d {
+      perspective: 800px;
+    }
+
+    .card-3d-inner {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 44px 36px;
+      transition: all 0.4s var(--ease);
+      transform-style: preserve-3d;
+      will-change: transform;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-3d-inner::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 20px;
+      background: radial-gradient(600px circle at var(--mx, 50%) var(--my, 50%),
+        rgba(139,92,246,0.06), transparent 50%);
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+    }
+
+    .card-3d-inner:hover::before { opacity: 1; }
+
+    .card-3d-inner::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: var(--accent-gradient);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .card-3d-inner:hover::after { opacity: 1; }
+
+    .card-3d-inner:hover {
+      border-color: var(--glass-border-hover);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3), 0 0 40px rgba(139,92,246,0.04);
+    }
+
+    /* ===== SERVICES GRID ===== */
+    .srv-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      max-width: 1060px;
+      width: 100%;
+      margin-top: 56px;
+    }
+
+    .srv-card { text-align: left; }
+
+    .srv-card .ico {
+      font-size: 32px;
+      margin-bottom: 16px;
+      display: block;
+      transform: translateZ(40px);
+    }
+
+    .srv-card h3 {
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: -0.003em;
+      margin-bottom: 8px;
+      transform: translateZ(20px);
+    }
+
+    .srv-card p {
+      font-size: 15px;
+      color: var(--text-dim);
+      line-height: 1.55;
+      max-width: 320px;
+      transform: translateZ(10px);
+    }
+
+    .price-tag {
+      display: inline-block;
+      margin-top: 18px;
+      padding: 5px 14px;
+      border-radius: 980px;
+      background: rgba(41,151,255,0.07);
+      color: var(--link);
+      font-size: 13px;
+      font-weight: 500;
+      transform: translateZ(10px);
+    }
+
+    /* ===== PROCESS ===== */
+    .proc-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      max-width: 1000px;
+      width: 100%;
+      margin-top: 56px;
+    }
+
+    .proc-item {
+      padding: 36px 24px;
+      text-align: left;
+      position: relative;
+    }
+
+    .proc-item:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      right: 0; top: 12%; height: 76%;
+      width: 1px;
+      background: rgba(255,255,255,0.05);
+    }
+
+    .proc-n {
+      font-size: 56px;
+      font-weight: 700;
+      line-height: 1;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      opacity: 0.2;
+      margin-bottom: 18px;
+    }
+
+    .proc-item h3 {
+      font-size: 19px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .proc-item p {
+      font-size: 14px;
+      line-height: 1.55;
+      color: var(--text-muted);
+    }
+
+    /* ===== PRICING ===== */
+    .price-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      max-width: 1060px;
+      width: 100%;
+      margin-top: 56px;
+    }
+
+    .price-card .card-3d-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      height: 100%;
+    }
+
+    .price-card.feat .card-3d-inner {
+      background: rgba(139,92,246,0.04);
+      border-color: rgba(139,92,246,0.15);
+    }
+
+    .price-card.feat .card-3d-inner:hover {
+      border-color: rgba(139,92,246,0.3);
+    }
+
+    .pbadge {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      padding: 4px 14px;
+      border-radius: 980px;
+      margin-bottom: 14px;
+      background: rgba(255,255,255,0.04);
+      color: var(--text-muted);
+    }
+
+    .feat .pbadge {
+      background: var(--accent-gradient);
+      color: #fff;
+    }
+
+    .price-card h3 {
+      font-size: clamp(36px, 4vw, 48px);
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+
+    .price-card .psub {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 28px;
+    }
+
+    .plist {
+      list-style: none;
+      width: 100%;
+      margin-bottom: 28px;
+      flex: 1;
+    }
+
+    .plist li {
+      padding: 9px 0;
+      font-size: 14px;
+      color: var(--text-dim);
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+
+    /* ===== PORTFOLIO ===== */
+    .port-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      max-width: 1060px;
+      width: 100%;
+      margin-top: 56px;
+    }
+
+    .port-card .card-3d-inner {
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .port-preview {
+      height: 220px;
+      background: rgba(10,10,18,0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Floating 3D mockup */
+    .mockup-3d {
+      width: 78%;
+      max-width: 340px;
+      transform: perspective(600px) rotateX(4deg) rotateY(-2deg) translateZ(0);
+      transition: transform 0.5s var(--ease);
+    }
+
+    .port-card:hover .mockup-3d {
+      transform: perspective(600px) rotateX(0) rotateY(0) translateZ(20px) scale(1.03);
+    }
+
+    .mw {
+      background: #111;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 16px 48px rgba(0,0,0,0.5);
+    }
+
+    .mb {
+      height: 24px;
+      background: #1a1a1a;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 0 8px;
+    }
+
+    .md { width: 7px; height: 7px; border-radius: 50%; }
+    .md-r { background: #ff5f57; }
+    .md-y { background: #ffbd2e; }
+    .md-g { background: #28c840; }
+
+    .mc {
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      min-height: 110px;
+    }
+
+    .ml { height: 5px; border-radius: 3px; background: #1e1e2e; }
+    .ml-a { background: linear-gradient(90deg, rgba(0,144,247,0.18), rgba(186,98,252,0.18)); }
+
+    .port-info {
+      padding: 20px 24px;
+      text-align: left;
+    }
+
+    .port-info h3 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .port-info p {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .ptags {
+      display: flex;
+      gap: 6px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+
+    .ptags span {
+      padding: 3px 10px;
+      border-radius: 980px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.05);
+      font-size: 11px;
+      color: var(--text-dim);
+    }
+
+    /* ===== TESTIMONIALS ===== */
+    .test-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      max-width: 1060px;
+      width: 100%;
+      margin-top: 56px;
+    }
+
+    .test-card .card-3d-inner {
+      text-align: left;
+    }
+
+    .stars {
+      color: #f59e0b;
+      font-size: 12px;
+      letter-spacing: 3px;
+      margin-bottom: 14px;
+    }
+
+    .test-card blockquote {
+      font-size: 15px;
+      line-height: 1.55;
+      color: var(--text-soft);
+      margin-bottom: 20px;
+      font-style: normal;
+    }
+
+    .ta-name { font-size: 14px; font-weight: 600; }
+    .ta-role { font-size: 12px; color: var(--text-muted); }
+
+    /* ===== FAQ ===== */
+    .faq-list {
+      max-width: 680px;
+      width: 100%;
+      margin-top: 48px;
+      text-align: left;
+    }
+
+    .faq-item { border-bottom: 1px solid rgba(255,255,255,0.05); }
+
+    .faq-q {
+      width: 100%;
+      background: none; border: none;
+      font-family: inherit;
+      font-size: clamp(16px, 2vw, 19px);
+      font-weight: 600;
+      color: var(--text-white);
+      text-align: left;
+      padding: 22px 0;
+      cursor: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .faq-q .ic {
+      font-size: 20px;
+      font-weight: 300;
+      color: var(--text-muted);
+      transition: transform 0.3s var(--ease);
+      flex-shrink: 0;
+      margin-left: 16px;
+    }
+
+    .faq-item.open .ic { transform: rotate(45deg); }
+
+    .faq-a {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s var(--ease);
+    }
+
+    .faq-item.open .faq-a { max-height: 200px; }
+
+    .faq-a p {
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--text-dim);
+      padding-bottom: 22px;
+    }
+
+    /* ===== CONTACT FORM ===== */
+    .contact-form {
+      max-width: 480px;
+      width: 100%;
+      margin-top: 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .contact-form input,
+    .contact-form textarea,
+    .contact-form select {
+      width: 100%;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 14px 18px;
+      color: var(--text-white);
+      font-family: inherit;
+      font-size: 15px;
+      outline: none;
+      transition: border-color 0.2s;
+      cursor: none;
+    }
+
+    .contact-form input:focus,
+    .contact-form textarea:focus,
+    .contact-form select:focus {
+      border-color: rgba(139,92,246,0.4);
+    }
+
+    .contact-form input::placeholder,
+    .contact-form textarea::placeholder {
+      color: var(--text-muted);
+    }
+
+    .contact-form textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .contact-form select {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23666' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 16px center;
+    }
+
+    .contact-form select option {
+      background: #111;
+      color: #fff;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+      border-top: 1px solid rgba(255,255,255,0.04);
+      padding: 28px clamp(16px, 4vw, 40px);
+      text-align: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    .f-links {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    .f-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 12px;
+      transition: color 0.2s;
+    }
+
+    .f-links a:hover { color: var(--text-white); }
+
+    footer p { font-size: 12px; color: rgba(245,245,247,0.15); }
+
+    /* ===== SCROLL REVEAL ===== */
+    .rv {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+    }
+
+    .rv.vis {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ===== i18n hidden ===== */
+    [data-i18n] { display: none; }
+    [data-i18n="en"] { display: initial; }
+    span[data-i18n="en"], div[data-i18n="en"] { display: block; }
+    .cta-row [data-i18n="en"], .badge [data-i18n="en"],
+    .ptags [data-i18n="en"], li[data-i18n="en"],
+    a[data-i18n="en"] { display: inline-flex; }
+    option[data-i18n="en"] { display: block; }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 1068px) {
+      .proc-row { grid-template-columns: 1fr 1fr; }
+      .proc-item:nth-child(2)::after { display: none; }
+    }
+
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .nav-links.open {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: var(--nav-h);
+        left: 0; right: 0;
+        background: rgba(5,5,16,0.95);
+        backdrop-filter: blur(24px);
+        padding: 20px;
+        gap: 16px;
+        align-items: center;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+      }
+      .burger { display: block; }
+
+      .srv-grid,
+      .port-grid { grid-template-columns: 1fr; }
+
+      .proc-row { grid-template-columns: 1fr; }
+      .proc-item::after { display: none !important; }
+      .proc-item { padding: 20px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+
+      .price-grid { grid-template-columns: 1fr; max-width: 400px; }
+      .test-row { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+
+      .stats { gap: 20px; }
+
+      /* Hide custom cursor on touch */
+      .cursor { display: none !important; }
+      body { cursor: auto; }
+      .btn, .faq-q { cursor: pointer; }
+    }
+
+    @media (max-width: 480px) {
+      .hero { padding-top: 80px; }
+      .stats { gap: 16px; }
+    }
+
+    /* Tablet landscape */
+    @media (min-width: 769px) and (max-width: 1068px) and (orientation: landscape) {
+      .hero { min-height: auto; padding: 120px 40px 80px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .grain { animation: none !important; }
+      .rv { opacity: 1; transform: none; transition: none; }
+      .cursor { display: none; }
+      body { cursor: auto; }
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="bgCanvas"></canvas>
+  <div class="grain"></div>
+  <div class="cursor" id="cursor"></div>
+
+  <div class="content">
+
+    <!-- NAV -->
+    <nav>
+      <div class="nav-inner">
+        <a href="#" class="nav-logo">VellumCadence</a>
+        <ul class="nav-links" id="navLinks">
+          <li><a href="#services" data-i18n="en">Services</a><a href="#services" data-i18n="nl">Diensten</a><a href="#services" data-i18n="ru">Услуги</a></li>
+          <li><a href="#process" data-i18n="en">Process</a><a href="#process" data-i18n="nl">Proces</a><a href="#process" data-i18n="ru">Процесс</a></li>
+          <li><a href="#pricing" data-i18n="en">Pricing</a><a href="#pricing" data-i18n="nl">Prijzen</a><a href="#pricing" data-i18n="ru">Цены</a></li>
+          <li><a href="#work" data-i18n="en">Work</a><a href="#work" data-i18n="nl">Werk</a><a href="#work" data-i18n="ru">Работы</a></li>
+          <li><a href="#contact" class="nav-cta" data-i18n="en">Start Project</a><a href="#contact" class="nav-cta" data-i18n="nl">Start Project</a><a href="#contact" class="nav-cta" data-i18n="ru">Начать проект</a></li>
+          <li>
+            <div class="lang-switch">
+              <button class="lang-btn active" data-lang="en">EN</button>
+              <button class="lang-btn" data-lang="nl">NL</button>
+              <button class="lang-btn" data-lang="ru">RU</button>
+            </div>
+          </li>
+        </ul>
+        <button class="burger" id="burger" aria-label="Menu">
+          <svg width="18" height="18" viewBox="0 0 18 18"><rect y="3" width="18" height="1.5" rx="0.75"/><rect y="8.25" width="18" height="1.5" rx="0.75"/><rect y="13.5" width="18" height="1.5" rx="0.75"/></svg>
+        </button>
+      </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="sec hero">
+      <div class="badge rv">
+        <span class="dot"></span>
+        <span data-i18n="en">Available for new projects</span>
+        <span data-i18n="nl">Beschikbaar voor nieuwe projecten</span>
+        <span data-i18n="ru">Открыты для новых проектов</span>
+      </div>
+      <h1 class="h-xl rv">
+        <span data-i18n="en">Websites that<br><span class="grad">sell.</span></span>
+        <span data-i18n="nl">Websites die<br><span class="grad">verkopen.</span></span>
+        <span data-i18n="ru">Сайты, которые<br><span class="grad">продают.</span></span>
+      </h1>
+      <p class="sub color-soft rv" style="max-width:500px;margin:14px auto 0;color:var(--text-soft)">
+        <span data-i18n="en">Premium web development for ambitious brands.<br>Strategy. Design. Code. Results.</span>
+        <span data-i18n="nl">Premium webontwikkeling voor ambitieuze merken.<br>Strategie. Design. Code. Resultaten.</span>
+        <span data-i18n="ru">Премиум веб-разработка для амбициозных брендов.<br>Стратегия. Дизайн. Код. Результат.</span>
+      </p>
+      <div class="cta-row rv">
+        <a href="#contact" class="btn btn-w" data-i18n="en">Start Your Project</a>
+        <a href="#contact" class="btn btn-w" data-i18n="nl">Start Uw Project</a>
+        <a href="#contact" class="btn btn-w" data-i18n="ru">Начать проект</a>
+        <a href="#work" class="btn btn-g" data-i18n="en">View Our Work</a>
+        <a href="#work" class="btn btn-g" data-i18n="nl">Bekijk Ons Werk</a>
+        <a href="#work" class="btn btn-g" data-i18n="ru">Наши работы</a>
+      </div>
+      <div class="stats rv">
+        <div><div class="stat-n grad">150+</div><div class="stat-l" data-i18n="en">Projects Delivered</div><div class="stat-l" data-i18n="nl">Projecten Opgeleverd</div><div class="stat-l" data-i18n="ru">Проектов</div></div>
+        <div><div class="stat-n grad">98%</div><div class="stat-l" data-i18n="en">Client Satisfaction</div><div class="stat-l" data-i18n="nl">Klanttevredenheid</div><div class="stat-l" data-i18n="ru">Довольных клиентов</div></div>
+        <div><div class="stat-n grad">12yr</div><div class="stat-l" data-i18n="en">Experience</div><div class="stat-l" data-i18n="nl">Ervaring</div><div class="stat-l" data-i18n="ru">Опыта</div></div>
+        <div><div class="stat-n grad">3.2x</div><div class="stat-l" data-i18n="en">Conversion Lift</div><div class="stat-l" data-i18n="nl">Conversie Stijging</div><div class="stat-l" data-i18n="ru">Рост конверсии</div></div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- SERVICES -->
+    <section class="sec" id="services">
+      <p class="caption grad rv" style="margin-bottom:10px" data-i18n="en">Services</p>
+      <p class="caption grad rv" style="margin-bottom:10px" data-i18n="nl">Diensten</p>
+      <p class="caption grad rv" style="margin-bottom:10px" data-i18n="ru">Услуги</p>
+      <h2 class="h-lg rv">
+        <span data-i18n="en">Everything you need<br>to dominate online.</span>
+        <span data-i18n="nl">Alles wat u nodig heeft<br>om online te domineren.</span>
+        <span data-i18n="ru">Всё, что нужно<br>для доминирования онлайн.</span>
+      </h2>
+      <div class="srv-grid">
+        <div class="card-3d srv-card rv"><div class="card-3d-inner">
+          <span class="ico">&#9672;</span>
+          <h3 data-i18n="en">Custom Websites</h3><h3 data-i18n="nl">Maatwerkwebsites</h3><h3 data-i18n="ru">Сайты на заказ</h3>
+          <p data-i18n="en">Bespoke design and development. Every pixel serves a purpose, every interaction converts.</p>
+          <p data-i18n="nl">Op maat gemaakt ontwerp en ontwikkeling. Elke pixel dient een doel.</p>
+          <p data-i18n="ru">Уникальный дизайн и разработка. Каждый пиксель работает на конверсию.</p>
+          <span class="price-tag">From &euro;2,500</span>
+        </div></div>
+        <div class="card-3d srv-card rv"><div class="card-3d-inner">
+          <span class="ico">&#9830;</span>
+          <h3 data-i18n="en">E-Commerce</h3><h3 data-i18n="nl">E-Commerce</h3><h3 data-i18n="ru">Интернет-магазины</h3>
+          <p data-i18n="en">High-converting stores. Shopify, WooCommerce, or custom with iDEAL & Klarna.</p>
+          <p data-i18n="nl">Hoog-converterende winkels. Shopify, WooCommerce, iDEAL & Klarna.</p>
+          <p data-i18n="ru">Конверсионные магазины. Shopify, WooCommerce, iDEAL & Klarna.</p>
+          <span class="price-tag">From &euro;5,000</span>
+        </div></div>
+        <div class="card-3d srv-card rv"><div class="card-3d-inner">
+          <span class="ico">&#10070;</span>
+          <h3 data-i18n="en">Web Applications</h3><h3 data-i18n="nl">Webapplicaties</h3><h3 data-i18n="ru">Веб-приложения</h3>
+          <p data-i18n="en">SaaS platforms, dashboards, and tools. React, Next.js, Node.js — built to scale.</p>
+          <p data-i18n="nl">SaaS-platforms, dashboards en tools. React, Next.js, Node.js.</p>
+          <p data-i18n="ru">SaaS-платформы, дашборды и инструменты. React, Next.js, Node.js.</p>
+          <span class="price-tag">From &euro;10,000</span>
+        </div></div>
+        <div class="card-3d srv-card rv"><div class="card-3d-inner">
+          <span class="ico">&#10023;</span>
+          <h3 data-i18n="en">AI Solutions</h3><h3 data-i18n="nl">AI-oplossingen</h3><h3 data-i18n="ru">AI-решения</h3>
+          <p data-i18n="en">Chatbots, smart search, automation. Your unfair advantage in the market.</p>
+          <p data-i18n="nl">Chatbots, slim zoeken, automatisering. Uw oneerlijk voordeel.</p>
+          <p data-i18n="ru">Чат-боты, умный поиск, автоматизация. Ваше нечестное преимущество.</p>
+          <span class="price-tag">Custom Quote</span>
+        </div></div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- PROCESS -->
+    <section class="sec" id="process">
+      <p class="caption grad rv" style="margin-bottom:10px" data-i18n="en">How We Work</p>
+      <p class="caption grad rv" style="margin-bottom:10px" data-i18n="nl">Hoe We Werken</p>
+      <p class="caption grad rv" style="margin-bottom:10px" data-i18n="ru">Как мы работаем</p>
+      <h2 class="h-lg rv">
+        <span data-i18n="en">From idea to launch.</span>
+        <span data-i18n="nl">Van idee tot lancering.</span>
+        <span data-i18n="ru">От идеи до запуска.</span>
+      </h2>
+      <div class="proc-row">
+        <div class="proc-item rv">
+          <div class="proc-n">01</div>
+          <h3 data-i18n="en">Discovery</h3><h3 data-i18n="nl">Analyse</h3><h3 data-i18n="ru">Анализ</h3>
+          <p data-i18n="en">Deep dive into your business, audience, competitors, and goals.</p>
+          <p data-i18n="nl">Analyse van uw bedrijf, doelgroep, concurrenten en doelen.</p>
+          <p data-i18n="ru">Глубокий анализ бизнеса, аудитории, конкурентов и целей.</p>
+        </div>
+        <div class="proc-item rv">
+          <div class="proc-n">02</div>
+          <h3 data-i18n="en">Design</h3><h3 data-i18n="nl">Ontwerp</h3><h3 data-i18n="ru">Дизайн</h3>
+          <p data-i18n="en">Wireframes and pixel-perfect mockups. You approve before code begins.</p>
+          <p data-i18n="nl">Wireframes en pixel-perfect mockups. U keurt goed voor de code begint.</p>
+          <p data-i18n="ru">Вайрфреймы и пиксель-перфект макеты. Вы утверждаете до разработки.</p>
+        </div>
+        <div class="proc-item rv">
+          <div class="proc-n">03</div>
+          <h3 data-i18n="en">Develop</h3><h3 data-i18n="nl">Ontwikkeling</h3><h3 data-i18n="ru">Разработка</h3>
+          <p data-i18n="en">Clean, fast, SEO-optimized code. Weekly staging previews.</p>
+          <p data-i18n="nl">Schone, snelle, SEO-geoptimaliseerde code. Wekelijkse previews.</p>
+          <p data-i18n="ru">Чистый, быстрый, SEO-оптимизированный код. Еженедельные превью.</p>
+        </div>
+        <div class="proc-item rv">
+          <div class="proc-n">04</div>
+          <h3 data-i18n="en">Launch</h3><h3 data-i18n="nl">Lancering</h3><h3 data-i18n="ru">Запуск</h3>
+          <p data-i18n="en">QA, deployment, analytics, and post-launch optimization.</p>
+          <p data-i18n="nl">QA, deployment, analytics en optimalisatie na lancering.</p>
+          <p data-i18n="ru">Тестирование, деплой, аналитика и оптимизация после запуска.</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- PRICING -->
+    <section class="sec" id="pricing">
+      <p class="caption grad rv" style="margin-bottom:10px" data-i18n="en">Pricing</p>
+      <p class="caption grad rv" style="margin-bottom:10px" data-i18n="nl">Prijzen</p>
+      <p class="caption grad rv" style="margin-bottom:10px" data-i18n="ru">Цены</p>
+      <h2 class="h-lg rv">
+        <span data-i18n="en">Transparent pricing.</span>
+        <span data-i18n="nl">Transparante prijzen.</span>
+        <span data-i18n="ru">Прозрачные цены.</span>
+      </h2>
+      <div class="price-grid">
+        <div class="card-3d price-card rv"><div class="card-3d-inner">
+          <span class="pbadge">Starter</span>
+          <h3>&euro;2,500</h3>
+          <div class="psub">One-time</div>
+          <ul class="plist">
+            <li data-i18n="en">Up to 5 pages</li><li data-i18n="nl">Tot 5 pagina's</li><li data-i18n="ru">До 5 страниц</li>
+            <li data-i18n="en">Custom responsive design</li><li data-i18n="nl">Responsief maatwerk</li><li data-i18n="ru">Адаптивный дизайн</li>
+            <li data-i18n="en">Basic SEO & CMS</li><li data-i18n="nl">Basis SEO & CMS</li><li data-i18n="ru">Базовый SEO и CMS</li>
+            <li data-i18n="en">3 months support</li><li data-i18n="nl">3 maanden support</li><li data-i18n="ru">3 месяца поддержки</li>
+            <li data-i18n="en">2 weeks delivery</li><li data-i18n="nl">2 weken levertijd</li><li data-i18n="ru">2 недели</li>
+          </ul>
+          <a href="#contact" class="btn btn-g" style="width:100%;justify-content:center" data-i18n="en">Get Started</a>
+          <a href="#contact" class="btn btn-g" style="width:100%;justify-content:center" data-i18n="nl">Beginnen</a>
+          <a href="#contact" class="btn btn-g" style="width:100%;justify-content:center" data-i18n="ru">Начать</a>
+        </div></div>
+        <div class="card-3d price-card feat rv"><div class="card-3d-inner">
+          <span class="pbadge">Business</span>
+          <h3>&euro;6,500</h3>
+          <div class="psub">Most Popular</div>
+          <ul class="plist">
+            <li data-i18n="en">Up to 15 pages</li><li data-i18n="nl">Tot 15 pagina's</li><li data-i18n="ru">До 15 страниц</li>
+            <li data-i18n="en">Premium custom design</li><li data-i18n="nl">Premium maatwerk</li><li data-i18n="ru">Премиум дизайн</li>
+            <li data-i18n="en">Advanced SEO & analytics</li><li data-i18n="nl">Geavanceerde SEO</li><li data-i18n="ru">Продвинутый SEO</li>
+            <li data-i18n="en">Multi-language & blog</li><li data-i18n="nl">Meertalig & blog</li><li data-i18n="ru">Мультиязычность и блог</li>
+            <li data-i18n="en">Animations & interactions</li><li data-i18n="nl">Animaties & interacties</li><li data-i18n="ru">Анимации и интерактив</li>
+            <li data-i18n="en">6 months support</li><li data-i18n="nl">6 maanden support</li><li data-i18n="ru">6 месяцев поддержки</li>
+          </ul>
+          <a href="#contact" class="btn btn-p" style="width:100%;justify-content:center" data-i18n="en">Get Started</a>
+          <a href="#contact" class="btn btn-p" style="width:100%;justify-content:center" data-i18n="nl">Beginnen</a>
+          <a href="#contact" class="btn btn-p" style="width:100%;justify-content:center" data-i18n="ru">Начать</a>
+        </div></div>
+        <div class="card-3d price-card rv"><div class="card-3d-inner">
+          <span class="pbadge">Enterprise</span>
+          <h3>&euro;15,000+</h3>
+          <div class="psub">Full Scale</div>
+          <ul class="plist">
+            <li data-i18n="en">Unlimited pages</li><li data-i18n="nl">Onbeperkt pagina's</li><li data-i18n="ru">Без ограничений</li>
+            <li data-i18n="en">E-commerce / Web app</li><li data-i18n="nl">E-commerce / Webapp</li><li data-i18n="ru">E-commerce / Приложение</li>
+            <li data-i18n="en">API & CRM integrations</li><li data-i18n="nl">API & CRM integraties</li><li data-i18n="ru">API и CRM интеграции</li>
+            <li data-i18n="en">AI-powered features</li><li data-i18n="nl">AI-functies</li><li data-i18n="ru">AI-функции</li>
+            <li data-i18n="en">12 months support</li><li data-i18n="nl">12 maanden support</li><li data-i18n="ru">12 месяцев поддержки</li>
+          </ul>
+          <a href="#contact" class="btn btn-g" style="width:100%;justify-content:center" data-i18n="en">Contact Us</a>
+          <a href="#contact" class="btn btn-g" style="width:100%;justify-content:center" data-i18n="nl">Neem Contact Op</a>
+          <a href="#contact" class="btn btn-g" style="width:100%;justify-content:center" data-i18n="ru">Связаться</a>
+        </div></div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- PORTFOLIO -->
+    <section class="sec" id="work">
+      <p class="caption grad rv" style="margin-bottom:10px" data-i18n="en">Selected Work</p>
+      <p class="caption grad rv" style="margin-bottom:10px" data-i18n="nl">Geselecteerd Werk</p>
+      <p class="caption grad rv" style="margin-bottom:10px" data-i18n="ru">Избранные работы</p>
+      <h2 class="h-lg rv">
+        <span data-i18n="en">Built to perform.</span>
+        <span data-i18n="nl">Gebouwd om te presteren.</span>
+        <span data-i18n="ru">Создано для результата.</span>
+      </h2>
+      <div class="port-grid">
+        <div class="card-3d port-card rv"><div class="card-3d-inner">
+          <div class="port-preview">
+            <div class="mockup-3d"><div class="mw"><div class="mb"><span class="md md-r"></span><span class="md md-y"></span><span class="md md-g"></span></div>
+              <div class="mc" style="background:#0d0d1a"><div class="ml ml-a" style="width:30%;height:7px"></div><div class="ml" style="width:78%"></div><div class="ml" style="width:52%"></div><div class="ml" style="width:35%;height:18px;margin-top:6px;border-radius:9px;background:rgba(0,144,247,0.1)"></div><div class="ml" style="width:88%;height:24px;margin-top:4px;background:#111"></div></div>
+            </div></div>
+          </div>
+          <div class="port-info"><h3>Cryptority</h3><p data-i18n="en">Blockchain platform with real-time data</p><p data-i18n="nl">Blockchain platform met real-time data</p><p data-i18n="ru">Блокчейн-платформа с данными в реальном времени</p><div class="ptags"><span>Landing</span><span>Web3</span><span>Dark UI</span></div></div>
+        </div></div>
+        <div class="card-3d port-card rv"><div class="card-3d-inner">
+          <div class="port-preview">
+            <div class="mockup-3d"><div class="mw"><div class="mb"><span class="md md-r"></span><span class="md md-y"></span><span class="md md-g"></span></div>
+              <div class="mc" style="background:#111"><div class="ml" style="width:62%"></div><div class="ml ml-a" style="width:38%;height:7px"></div><div style="display:flex;gap:5px;margin-top:6px"><div class="ml" style="flex:1;height:40px;background:#1a1a1a"></div><div class="ml" style="flex:1;height:40px;background:#1a1a1a"></div><div class="ml" style="flex:1;height:40px;background:#1a1a1a"></div></div></div>
+            </div></div>
+          </div>
+          <div class="port-info"><h3>AutoEurope</h3><p data-i18n="en">Car dealership with lead generation</p><p data-i18n="nl">Autodealer met leadgeneratie</p><p data-i18n="ru">Автодилер с лидогенерацией</p><div class="ptags"><span>Business</span><span>Auto</span><span>CMS</span></div></div>
+        </div></div>
+        <div class="card-3d port-card rv"><div class="card-3d-inner">
+          <div class="port-preview">
+            <div class="mockup-3d"><div class="mw"><div class="mb"><span class="md md-r"></span><span class="md md-y"></span><span class="md md-g"></span></div>
+              <div class="mc" style="background:#0f0f18"><div style="display:flex;gap:5px"><div class="ml" style="flex:2;height:36px;background:rgba(186,98,252,0.05)"></div><div class="ml" style="flex:1;height:36px;background:rgba(0,144,247,0.05)"></div></div><div class="ml" style="width:82%"></div><div class="ml" style="width:56%"></div></div>
+            </div></div>
+          </div>
+          <div class="port-info"><h3>FinTech Dashboard</h3><p data-i18n="en">Analytics platform with AI insights</p><p data-i18n="nl">Analyseplatform met AI-inzichten</p><p data-i18n="ru">Аналитика с AI-инсайтами</p><div class="ptags"><span>Web App</span><span>Finance</span><span>AI</span></div></div>
+        </div></div>
+        <div class="card-3d port-card rv"><div class="card-3d-inner">
+          <div class="port-preview">
+            <div class="mockup-3d"><div class="mw"><div class="mb"><span class="md md-r"></span><span class="md md-y"></span><span class="md md-g"></span></div>
+              <div class="mc" style="background:#121212"><div class="ml" style="width:48%;height:7px"></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:5px"><div class="ml" style="height:40px;background:#1e1e1e"></div><div class="ml" style="height:40px;background:#1e1e1e"></div></div><div class="ml ml-a" style="width:32%;height:16px;border-radius:8px;margin-top:5px"></div></div>
+            </div></div>
+          </div>
+          <div class="port-info"><h3>Fashion Store</h3><p data-i18n="en">Shopify store with iDEAL payments</p><p data-i18n="nl">Shopify winkel met iDEAL</p><p data-i18n="ru">Shopify-магазин с iDEAL</p><div class="ptags"><span>E-Commerce</span><span>Shopify</span><span>Fashion</span></div></div>
+        </div></div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- TESTIMONIALS -->
+    <section class="sec">
+      <p class="caption grad rv" style="margin-bottom:10px" data-i18n="en">Testimonials</p>
+      <p class="caption grad rv" style="margin-bottom:10px" data-i18n="nl">Referenties</p>
+      <p class="caption grad rv" style="margin-bottom:10px" data-i18n="ru">Отзывы</p>
+      <h2 class="h-lg rv">
+        <span data-i18n="en">Trusted by ambitious brands.</span>
+        <span data-i18n="nl">Vertrouwd door ambitieuze merken.</span>
+        <span data-i18n="ru">Нам доверяют амбициозные бренды.</span>
+      </h2>
+      <div class="test-row">
+        <div class="card-3d test-card rv"><div class="card-3d-inner">
+          <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <blockquote data-i18n="en">"They built a sales machine. Conversions jumped 280% in the first month."</blockquote>
+          <blockquote data-i18n="nl">"Ze bouwden een verkoopmachine. Conversies stegen 280% in de eerste maand."</blockquote>
+          <blockquote data-i18n="ru">"Они создали машину продаж. Конверсия выросла на 280% за первый месяц."</blockquote>
+          <div><div class="ta-name">Marco V.</div><div class="ta-role">CEO, TechStart NL</div></div>
+        </div></div>
+        <div class="card-3d test-card rv"><div class="card-3d-inner">
+          <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <blockquote data-i18n="en">"Understood our vision immediately. Delivered beyond expectations. AI features are a game-changer."</blockquote>
+          <blockquote data-i18n="nl">"Begrepen onze visie onmiddellijk. Overtroffen verwachtingen. AI-functies zijn een doorbraak."</blockquote>
+          <blockquote data-i18n="ru">"Сразу поняли нашу идею. Превзошли ожидания. AI-функции изменили правила игры."</blockquote>
+          <div><div class="ta-name">Sophie L.</div><div class="ta-role">Founder, Bloom Studio</div></div>
+        </div></div>
+        <div class="card-3d test-card rv"><div class="card-3d-inner">
+          <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <blockquote data-i18n="en">"Best investment this year. New store generates 40% more revenue. Outstanding support."</blockquote>
+          <blockquote data-i18n="nl">"Beste investering dit jaar. Nieuwe winkel genereert 40% meer omzet."</blockquote>
+          <blockquote data-i18n="ru">"Лучшая инвестиция года. Новый магазин приносит на 40% больше выручки."</blockquote>
+          <div><div class="ta-name">Jan de Vries</div><div class="ta-role">Director, Fashion Hub</div></div>
+        </div></div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- FAQ -->
+    <section class="sec" id="faq">
+      <p class="caption grad rv" style="margin-bottom:10px">FAQ</p>
+      <h2 class="h-lg rv">
+        <span data-i18n="en">Common questions.</span>
+        <span data-i18n="nl">Veelgestelde vragen.</span>
+        <span data-i18n="ru">Частые вопросы.</span>
+      </h2>
+      <div class="faq-list">
+        <div class="faq-item rv">
+          <button class="faq-q"><span data-i18n="en">How long does it take?</span><span data-i18n="nl">Hoe lang duurt het?</span><span data-i18n="ru">Сколько времени занимает?</span><span class="ic">+</span></button>
+          <div class="faq-a"><p data-i18n="en">Landing pages: 1-2 weeks. Business sites: 3-4 weeks. E-commerce: 6-12 weeks.</p><p data-i18n="nl">Landingspagina's: 1-2 weken. Bedrijfssites: 3-4 weken. E-commerce: 6-12 weken.</p><p data-i18n="ru">Лендинги: 1-2 недели. Бизнес-сайты: 3-4 недели. E-commerce: 6-12 недель.</p></div>
+        </div>
+        <div class="faq-item rv">
+          <button class="faq-q"><span data-i18n="en">What do you need from me?</span><span data-i18n="nl">Wat heeft u van mij nodig?</span><span data-i18n="ru">Что нужно от меня?</span><span class="ic">+</span></button>
+          <div class="faq-a"><p data-i18n="en">Brand assets, content, and goals. We help with branding and copywriting too.</p><p data-i18n="nl">Merkmaterialen, inhoud en doelen. We helpen ook met branding en copywriting.</p><p data-i18n="ru">Брендбук, контент и цели. Помогаем с брендингом и копирайтингом.</p></div>
+        </div>
+        <div class="faq-item rv">
+          <button class="faq-q"><span data-i18n="en">Do you offer maintenance?</span><span data-i18n="nl">Biedt u onderhoud aan?</span><span data-i18n="ru">Есть ли поддержка?</span><span class="ic">+</span></button>
+          <div class="faq-a"><p data-i18n="en">Yes. From &euro;99/month — updates, backups, security, and minor changes included.</p><p data-i18n="nl">Ja. Vanaf &euro;99/maand — updates, back-ups, beveiliging en kleine wijzigingen.</p><p data-i18n="ru">Да. От &euro;99/мес — обновления, бэкапы, безопасность и мелкие правки.</p></div>
+        </div>
+        <div class="faq-item rv">
+          <button class="faq-q"><span data-i18n="en">Payment structure?</span><span data-i18n="nl">Betalingsstructuur?</span><span data-i18n="ru">Как оплата?</span><span class="ic">+</span></button>
+          <div class="faq-a"><p data-i18n="en">50% upfront, 50% on completion. Milestone-based for larger projects.</p><p data-i18n="nl">50% vooraf, 50% bij oplevering. Milestone-gebaseerd voor grotere projecten.</p><p data-i18n="ru">50% предоплата, 50% по завершении. Для крупных проектов — поэтапная оплата.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- CONTACT -->
+    <section class="sec" id="contact">
+      <p class="caption grad rv" style="margin-bottom:10px" data-i18n="en">Get In Touch</p>
+      <p class="caption grad rv" style="margin-bottom:10px" data-i18n="nl">Neem Contact Op</p>
+      <p class="caption grad rv" style="margin-bottom:10px" data-i18n="ru">Свяжитесь с нами</p>
+      <h2 class="h-lg rv">
+        <span data-i18n="en">Let's build<br><span class="grad">something great.</span></span>
+        <span data-i18n="nl">Laten we iets<br><span class="grad">groots bouwen.</span></span>
+        <span data-i18n="ru">Давайте создадим<br><span class="grad">что-то великое.</span></span>
+      </h2>
+      <form class="contact-form rv" onsubmit="return false;">
+        <div class="form-row">
+          <input type="text" placeholder="Name" required />
+          <input type="email" placeholder="Email" required />
+        </div>
+        <select>
+          <option value="" disabled selected data-i18n="en">Select service</option>
+          <option value="" disabled selected data-i18n="nl">Selecteer dienst</option>
+          <option value="" disabled selected data-i18n="ru">Выберите услугу</option>
+          <option>Custom Website</option>
+          <option>E-Commerce</option>
+          <option>Web Application</option>
+          <option>AI Solution</option>
+          <option data-i18n="en">Other</option><option data-i18n="nl">Anders</option><option data-i18n="ru">Другое</option>
+        </select>
+        <select>
+          <option value="" disabled selected data-i18n="en">Budget range</option>
+          <option value="" disabled selected data-i18n="nl">Budget</option>
+          <option value="" disabled selected data-i18n="ru">Бюджет</option>
+          <option>&euro;2,500 - &euro;5,000</option>
+          <option>&euro;5,000 - &euro;10,000</option>
+          <option>&euro;10,000 - &euro;20,000</option>
+          <option>&euro;20,000+</option>
+        </select>
+        <textarea placeholder="Tell us about your project..." rows="4"></textarea>
+        <button type="submit" class="btn btn-w" style="width:100%;justify-content:center" data-i18n="en">Send Message</button>
+        <button type="submit" class="btn btn-w" style="width:100%;justify-content:center" data-i18n="nl">Bericht Versturen</button>
+        <button type="submit" class="btn btn-w" style="width:100%;justify-content:center" data-i18n="ru">Отправить</button>
+      </form>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="f-links">
+        <a href="#services">Services</a>
+        <a href="#work">Work</a>
+        <a href="#pricing">Pricing</a>
+        <a href="mailto:hello@vellumcadence.com">Email</a>
+      </div>
+      <p>&copy; 2026 VellumCadence. All rights reserved.</p>
+    </footer>
+
+  </div>
+
+  <script>
+    // ===== INTERACTIVE PARTICLE CANVAS =====
+    const canvas = document.getElementById('bgCanvas');
+    const ctx = canvas.getContext('2d');
+    let W, H, particles = [], mouse = { x: -1000, y: -1000 };
+    const DPR = Math.min(window.devicePixelRatio || 1, 2);
+
+    function resize() {
+      W = window.innerWidth;
+      H = window.innerHeight;
+      canvas.width = W * DPR;
+      canvas.height = H * DPR;
+      canvas.style.width = W + 'px';
+      canvas.style.height = H + 'px';
+      ctx.scale(DPR, DPR);
+    }
+
+    function createParticles() {
+      particles = [];
+      const count = Math.min(Math.floor((W * H) / 12000), 120);
+      for (let i = 0; i < count; i++) {
+        particles.push({
+          x: Math.random() * W,
+          y: Math.random() * H,
+          vx: (Math.random() - 0.5) * 0.3,
+          vy: (Math.random() - 0.5) * 0.3,
+          r: Math.random() * 1.5 + 0.5,
+          o: Math.random() * 0.3 + 0.05,
+        });
+      }
+    }
+
+    function drawParticles() {
+      ctx.clearRect(0, 0, W, H);
+
+      // Connections
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 150) {
+            const alpha = (1 - dist / 150) * 0.06;
+            ctx.beginPath();
+            ctx.strokeStyle = `rgba(139,92,246,${alpha})`;
+            ctx.lineWidth = 0.5;
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.stroke();
+          }
+        }
+      }
+
+      // Particles + mouse interaction
+      particles.forEach(p => {
+        // Mouse repulsion
+        const dx = p.x - mouse.x;
+        const dy = p.y - mouse.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 200 && dist > 0) {
+          const force = (200 - dist) / 200 * 0.8;
+          p.vx += (dx / dist) * force * 0.15;
+          p.vy += (dy / dist) * force * 0.15;
+        }
+
+        // Mouse connection lines
+        if (dist < 250) {
+          const alpha = (1 - dist / 250) * 0.12;
+          ctx.beginPath();
+          ctx.strokeStyle = `rgba(0,144,247,${alpha})`;
+          ctx.lineWidth = 0.8;
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(mouse.x, mouse.y);
+          ctx.stroke();
+        }
+
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vx *= 0.99;
+        p.vy *= 0.99;
+
+        if (p.x < 0) p.x = W;
+        if (p.x > W) p.x = 0;
+        if (p.y < 0) p.y = H;
+        if (p.y > H) p.y = 0;
+
+        // Glow near mouse
+        const glow = dist < 200 ? (1 - dist / 200) * 0.6 : 0;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r + glow * 2, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${139 + glow * 100},${92 + glow * 50},${246},${p.o + glow * 0.4})`;
+        ctx.fill();
+      });
+
+      requestAnimationFrame(drawParticles);
+    }
+
+    resize();
+    createParticles();
+    drawParticles();
+    window.addEventListener('resize', () => { resize(); createParticles(); });
+    window.addEventListener('mousemove', (e) => { mouse.x = e.clientX; mouse.y = e.clientY; });
+    window.addEventListener('touchmove', (e) => { mouse.x = e.touches[0].clientX; mouse.y = e.touches[0].clientY; });
+
+    // ===== CUSTOM CURSOR =====
+    const cur = document.getElementById('cursor');
+    document.addEventListener('mousemove', (e) => {
+      cur.style.left = e.clientX + 'px';
+      cur.style.top = e.clientY + 'px';
+    });
+
+    const hovers = document.querySelectorAll('a, button, .card-3d-inner, input, textarea, select');
+    hovers.forEach(el => {
+      el.addEventListener('mouseenter', () => cur.classList.add('hover'));
+      el.addEventListener('mouseleave', () => cur.classList.remove('hover'));
+    });
+
+    // ===== 3D TILT =====
+    document.querySelectorAll('.card-3d').forEach(card => {
+      const inner = card.querySelector('.card-3d-inner');
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const cx = rect.width / 2;
+        const cy = rect.height / 2;
+        const rotY = ((x - cx) / cx) * 6;
+        const rotX = ((cy - y) / cy) * 6;
+        inner.style.transform = `perspective(800px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale(1.01)`;
+        inner.style.setProperty('--mx', x + 'px');
+        inner.style.setProperty('--my', y + 'px');
+      });
+
+      card.addEventListener('mouseleave', () => {
+        inner.style.transform = 'perspective(800px) rotateX(0) rotateY(0) scale(1)';
+      });
+    });
+
+    // ===== SCROLL REVEAL =====
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); } });
+    }, { threshold: 0.08 });
+    document.querySelectorAll('.rv').forEach(el => obs.observe(el));
+
+    // ===== BURGER =====
+    document.getElementById('burger').addEventListener('click', () => {
+      document.getElementById('navLinks').classList.toggle('open');
+    });
+    document.querySelectorAll('.nav-links a').forEach(a => {
+      a.addEventListener('click', () => document.getElementById('navLinks').classList.remove('open'));
+    });
+
+    // ===== FAQ =====
+    document.querySelectorAll('.faq-q').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const item = btn.parentElement;
+        const was = item.classList.contains('open');
+        document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+        if (!was) item.classList.add('open');
+      });
+    });
+
+    // ===== i18n =====
+    function setLang(lang) {
+      document.documentElement.setAttribute('data-lang', lang);
+      // Update CSS visibility
+      const style = document.getElementById('langStyle') || document.createElement('style');
+      style.id = 'langStyle';
+      style.textContent = `
+        [data-i18n] { display: none !important; }
+        [data-i18n="${lang}"] { display: initial !important; }
+        span[data-i18n="${lang}"], div[data-i18n="${lang}"],
+        p[data-i18n="${lang}"], h2 span[data-i18n="${lang}"],
+        h3[data-i18n="${lang}"] { display: block !important; }
+        .cta-row [data-i18n="${lang}"], .badge [data-i18n="${lang}"],
+        a[data-i18n="${lang}"], button[data-i18n="${lang}"] { display: inline-flex !important; }
+        li[data-i18n="${lang}"] { display: list-item !important; }
+        option[data-i18n="${lang}"] { display: block !important; }
+        blockquote[data-i18n="${lang}"] { display: block !important; }
+        h1 span[data-i18n="${lang}"] { display: inline !important; }
+      `;
+      if (!style.parentNode) document.head.appendChild(style);
+
+      // Update lang buttons
+      document.querySelectorAll('.lang-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.lang === lang);
+      });
+      localStorage.setItem('vc_lang', lang);
+    }
+
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.addEventListener('click', () => setLang(btn.dataset.lang));
+    });
+
+    // Init language
+    setLang(localStorage.getItem('vc_lang') || navigator.language.startsWith('nl') ? 'nl' : navigator.language.startsWith('ru') ? 'ru' : 'en');
+    // Fix: re-check
+    const savedLang = localStorage.getItem('vc_lang');
+    if (savedLang) setLang(savedLang);
+    else {
+      const bl = navigator.language.slice(0,2);
+      setLang(bl === 'nl' ? 'nl' : bl === 'ru' ? 'ru' : 'en');
+    }
+  </script>
+</body>
+</html>
