@@ -46,7 +46,10 @@
       color: var(--text-white);
       background: var(--bg);
       overflow-x: hidden;
-      cursor: none;
+    }
+
+    @media (pointer: fine) {
+      body { cursor: none; }
     }
 
     /* ===== CUSTOM CURSOR ===== */
@@ -968,10 +971,10 @@
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .grain { animation: none !important; }
+      .grain { display: none !important; }
       .rv { opacity: 1; transform: none; transition: none; }
       .cursor { display: none; }
-      body { cursor: auto; }
+      body { cursor: auto !important; }
     }
 
     /* Cookie consent */
@@ -1033,9 +1036,9 @@
         </ul>
         <div class="nav-right">
           <div class="lang-switch" id="langSwitchMobile">
-            <button class="lang-btn active" data-lang="en">EN</button>
-            <button class="lang-btn" data-lang="nl">NL</button>
-            <button class="lang-btn" data-lang="ru">RU</button>
+            <button class="lang-btn active" data-lang="en" aria-label="Switch to English">EN</button>
+            <button class="lang-btn" data-lang="nl" aria-label="Switch to Nederlands">NL</button>
+            <button class="lang-btn" data-lang="ru" aria-label="Switch to Russian">RU</button>
           </div>
           <button class="burger" id="burger" aria-label="Menu" aria-expanded="false">
             <svg width="18" height="18" viewBox="0 0 18 18"><rect y="3" width="18" height="1.5" rx="0.75"/><rect y="8.25" width="18" height="1.5" rx="0.75"/><rect y="13.5" width="18" height="1.5" rx="0.75"/></svg>
@@ -1357,33 +1360,32 @@
         <span data-i18n="nl">Laten we iets<br><span class="grad">groots bouwen.</span></span>
         <span data-i18n="ru">Давайте создадим<br><span class="grad">что-то великое.</span></span>
       </h2>
-      <form class="contact-form rv" id="contactForm" action="https://formspree.io/f/vellumcadence@gmail.com" method="POST">
+      <form class="contact-form rv" id="contactForm" action="https://formspree.io/f/xkgwjbpz" method="POST">
         <input type="hidden" name="_subject" value="New lead from VellumCadence Studio" />
-        <input type="hidden" name="_next" value="https://tradervd9.github.io/web-studio/#contact" />
         <input type="text" name="_gotcha" style="display:none" />
         <div class="form-row">
-          <input type="text" name="name" id="f-name" data-ph-en="Name" data-ph-nl="Naam" data-ph-ru="Имя" required />
-          <input type="email" name="email" id="f-email" data-ph-en="Email" data-ph-nl="E-mail" data-ph-ru="Эл. почта" required />
+          <input type="text" name="name" id="f-name" data-ph-en="Name" data-ph-nl="Naam" data-ph-ru="Имя" placeholder="Name" required />
+          <input type="email" name="email" id="f-email" data-ph-en="Email" data-ph-nl="E-mail" data-ph-ru="Эл. почта" placeholder="Email" required />
         </div>
         <select name="service" id="f-service">
-          <option value="" disabled selected data-ph-en="Select service" data-ph-nl="Selecteer dienst" data-ph-ru="Выберите услугу"></option>
-          <option value="website">Custom Website</option>
+          <option value="" disabled selected data-ph-en="Select service" data-ph-nl="Selecteer dienst" data-ph-ru="Выберите услугу">Select service</option>
+          <option value="website" data-i18n="en">Custom Website</option><option value="website" data-i18n="nl">Maatwerk Website</option><option value="website" data-i18n="ru">Сайт на заказ</option>
           <option value="ecommerce">E-Commerce</option>
-          <option value="webapp">Web Application</option>
-          <option value="ai">AI Solution</option>
+          <option value="webapp" data-i18n="en">Web Application</option><option value="webapp" data-i18n="nl">Webapplicatie</option><option value="webapp" data-i18n="ru">Веб-приложение</option>
+          <option value="ai" data-i18n="en">AI Solution</option><option value="ai" data-i18n="nl">AI-oplossing</option><option value="ai" data-i18n="ru">AI-решение</option>
           <option value="other" data-i18n="en">Other</option><option value="other" data-i18n="nl">Anders</option><option value="other" data-i18n="ru">Другое</option>
         </select>
         <select name="budget" id="f-budget">
-          <option value="" disabled selected data-ph-en="Budget range" data-ph-nl="Budget" data-ph-ru="Бюджет"></option>
+          <option value="" disabled selected data-ph-en="Budget range" data-ph-nl="Budget" data-ph-ru="Бюджет">Budget range</option>
           <option>&euro;2,500 - &euro;5,000</option>
           <option>&euro;5,000 - &euro;10,000</option>
           <option>&euro;10,000 - &euro;20,000</option>
           <option>&euro;20,000+</option>
         </select>
-        <textarea name="message" id="f-msg" rows="4" data-ph-en="Tell us about your project..." data-ph-nl="Vertel ons over uw project..." data-ph-ru="Расскажите о вашем проекте..."></textarea>
-        <button type="submit" class="btn btn-w" style="width:100%;justify-content:center" data-i18n="en">Send Message</button>
-        <button type="submit" class="btn btn-w" style="width:100%;justify-content:center" data-i18n="nl">Bericht Versturen</button>
-        <button type="submit" class="btn btn-w" style="width:100%;justify-content:center" data-i18n="ru">Отправить</button>
+        <textarea name="message" id="f-msg" rows="4" data-ph-en="Tell us about your project..." data-ph-nl="Vertel ons over uw project..." data-ph-ru="Расскажите о вашем проекте..." placeholder="Tell us about your project..."></textarea>
+        <button type="submit" class="btn btn-w" style="width:100%;justify-content:center">
+          <span data-i18n="en">Send Message</span><span data-i18n="nl">Bericht Versturen</span><span data-i18n="ru">Отправить</span>
+        </button>
         <p id="form-msg" style="text-align:center;font-size:14px;display:none"></p>
       </form>
     </section>
@@ -1443,8 +1445,9 @@
         for (let j = i + 1; j < particles.length; j++) {
           const dx = particles[i].x - particles[j].x;
           const dy = particles[i].y - particles[j].y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < 150) {
+          const distSq = dx * dx + dy * dy;
+          if (distSq < 22500) {
+            const dist = Math.sqrt(distSq);
             const alpha = (1 - dist / 150) * 0.06;
             ctx.beginPath();
             ctx.strokeStyle = `rgba(139,92,246,${alpha})`;
@@ -1510,7 +1513,7 @@
       resizeTimer = setTimeout(() => { resize(); createParticles(); }, 200);
     });
     window.addEventListener('mousemove', (e) => { mouse.x = e.clientX; mouse.y = e.clientY; });
-    window.addEventListener('touchmove', (e) => { mouse.x = e.touches[0].clientX; mouse.y = e.touches[0].clientY; });
+    window.addEventListener('touchmove', (e) => { mouse.x = e.touches[0].clientX; mouse.y = e.touches[0].clientY; }, { passive: true });
 
     // ===== CUSTOM CURSOR =====
     const cur = document.getElementById('cursor');
@@ -1554,10 +1557,15 @@
 
     // ===== BURGER =====
     document.getElementById('burger').addEventListener('click', () => {
-      document.getElementById('navLinks').classList.toggle('open');
+      const nav = document.getElementById('navLinks');
+      nav.classList.toggle('open');
+      document.getElementById('burger').setAttribute('aria-expanded', nav.classList.contains('open'));
     });
     document.querySelectorAll('.nav-links a').forEach(a => {
-      a.addEventListener('click', () => document.getElementById('navLinks').classList.remove('open'));
+      a.addEventListener('click', () => {
+        document.getElementById('navLinks').classList.remove('open');
+        document.getElementById('burger').setAttribute('aria-expanded', 'false');
+      });
     });
 
     // ===== FAQ =====
@@ -1688,6 +1696,8 @@
 
             const plus = tier === 'enterprise' ? '+' : '';
 
+            if (typeof p.price !== 'number' || (p.original && typeof p.original !== 'number')) return;
+
             if (p.original > p.price && p.original > 0) {
               const pct = Math.round((1 - p.price / p.original) * 100);
               h3.innerHTML = `<span class="price-old">&euro;${p.original.toLocaleString()}</span> &euro;${p.price.toLocaleString()}${plus}<span class="discount-badge">-${pct}%</span>`;
@@ -1695,7 +1705,9 @@
               h3.innerHTML = `&euro;${p.price.toLocaleString()}${plus}`;
             }
 
-            if (psub && p.label) psub.textContent = p.label;
+            if (p.label) {
+              card.querySelectorAll('.psub').forEach(s => s.textContent = p.label);
+            }
           });
         }
 
