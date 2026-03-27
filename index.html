@@ -5,6 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5">
   <title>VellumCadence — Premium Web Development Studio</title>
   <meta name="description" content="We craft premium websites that convert. Custom design, development, and AI-powered solutions for ambitious brands.">
+  <meta property="og:title" content="VellumCadence — Premium Web Development Studio">
+  <meta property="og:description" content="We craft premium websites that convert. Strategy, design, code, results.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://tradervd9.github.io/web-studio/">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://tradervd9.github.io/web-studio/">
   <style>
     :root {
       --text-white: #f5f5f7;
@@ -80,6 +86,13 @@
       opacity: 0.03;
       background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
       animation: gr 0.5s steps(6) infinite;
+      will-change: transform;
+    }
+
+    /* Focus visible */
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
     }
     @keyframes gr {
       0%{transform:translate(0)}20%{transform:translate(-5%,5%)}40%{transform:translate(-8%,2%)}
@@ -180,6 +193,12 @@
     }
 
     .lang-btn:hover:not(.active) { color: rgba(245,245,247,0.7); }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
 
     .burger {
       display: none;
@@ -957,9 +976,9 @@
 </head>
 <body>
 
-  <canvas id="bgCanvas"></canvas>
-  <div class="grain"></div>
-  <div class="cursor" id="cursor"></div>
+  <canvas id="bgCanvas" aria-hidden="true"></canvas>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="cursor" id="cursor" aria-hidden="true"></div>
 
   <div class="content">
 
@@ -973,17 +992,17 @@
           <li><a href="#pricing" data-i18n="en">Pricing</a><a href="#pricing" data-i18n="nl">Prijzen</a><a href="#pricing" data-i18n="ru">Цены</a></li>
           <li><a href="#work" data-i18n="en">Work</a><a href="#work" data-i18n="nl">Werk</a><a href="#work" data-i18n="ru">Работы</a></li>
           <li><a href="#contact" class="nav-cta" data-i18n="en">Start Project</a><a href="#contact" class="nav-cta" data-i18n="nl">Start Project</a><a href="#contact" class="nav-cta" data-i18n="ru">Начать проект</a></li>
-          <li>
-            <div class="lang-switch">
-              <button class="lang-btn active" data-lang="en">EN</button>
-              <button class="lang-btn" data-lang="nl">NL</button>
-              <button class="lang-btn" data-lang="ru">RU</button>
-            </div>
-          </li>
         </ul>
-        <button class="burger" id="burger" aria-label="Menu">
-          <svg width="18" height="18" viewBox="0 0 18 18"><rect y="3" width="18" height="1.5" rx="0.75"/><rect y="8.25" width="18" height="1.5" rx="0.75"/><rect y="13.5" width="18" height="1.5" rx="0.75"/></svg>
-        </button>
+        <div class="nav-right">
+          <div class="lang-switch" id="langSwitchMobile">
+            <button class="lang-btn active" data-lang="en">EN</button>
+            <button class="lang-btn" data-lang="nl">NL</button>
+            <button class="lang-btn" data-lang="ru">RU</button>
+          </div>
+          <button class="burger" id="burger" aria-label="Menu" aria-expanded="false">
+            <svg width="18" height="18" viewBox="0 0 18 18"><rect y="3" width="18" height="1.5" rx="0.75"/><rect y="8.25" width="18" height="1.5" rx="0.75"/><rect y="13.5" width="18" height="1.5" rx="0.75"/></svg>
+          </button>
+        </div>
       </div>
     </nav>
 
@@ -1040,7 +1059,7 @@
           <p data-i18n="en">Bespoke design and development. Every pixel serves a purpose, every interaction converts.</p>
           <p data-i18n="nl">Op maat gemaakt ontwerp en ontwikkeling. Elke pixel dient een doel.</p>
           <p data-i18n="ru">Уникальный дизайн и разработка. Каждый пиксель работает на конверсию.</p>
-          <span class="price-tag">From &euro;2,500</span>
+          <span class="price-tag" data-i18n="en">From &euro;2,500</span><span class="price-tag" data-i18n="nl">Vanaf &euro;2.500</span><span class="price-tag" data-i18n="ru">От &euro;2 500</span>
         </div></div>
         <div class="card-3d srv-card rv"><div class="card-3d-inner">
           <span class="ico">&#9830;</span>
@@ -1048,7 +1067,7 @@
           <p data-i18n="en">High-converting stores. Shopify, WooCommerce, or custom with iDEAL & Klarna.</p>
           <p data-i18n="nl">Hoog-converterende winkels. Shopify, WooCommerce, iDEAL & Klarna.</p>
           <p data-i18n="ru">Конверсионные магазины. Shopify, WooCommerce, iDEAL & Klarna.</p>
-          <span class="price-tag">From &euro;5,000</span>
+          <span class="price-tag" data-i18n="en">From &euro;5,000</span><span class="price-tag" data-i18n="nl">Vanaf &euro;5.000</span><span class="price-tag" data-i18n="ru">От &euro;5 000</span>
         </div></div>
         <div class="card-3d srv-card rv"><div class="card-3d-inner">
           <span class="ico">&#10070;</span>
@@ -1056,7 +1075,7 @@
           <p data-i18n="en">SaaS platforms, dashboards, and tools. React, Next.js, Node.js — built to scale.</p>
           <p data-i18n="nl">SaaS-platforms, dashboards en tools. React, Next.js, Node.js.</p>
           <p data-i18n="ru">SaaS-платформы, дашборды и инструменты. React, Next.js, Node.js.</p>
-          <span class="price-tag">From &euro;10,000</span>
+          <span class="price-tag" data-i18n="en">From &euro;10,000</span><span class="price-tag" data-i18n="nl">Vanaf &euro;10.000</span><span class="price-tag" data-i18n="ru">От &euro;10 000</span>
         </div></div>
         <div class="card-3d srv-card rv"><div class="card-3d-inner">
           <span class="ico">&#10023;</span>
@@ -1064,7 +1083,7 @@
           <p data-i18n="en">Chatbots, smart search, automation. Your unfair advantage in the market.</p>
           <p data-i18n="nl">Chatbots, slim zoeken, automatisering. Uw oneerlijk voordeel.</p>
           <p data-i18n="ru">Чат-боты, умный поиск, автоматизация. Ваше нечестное преимущество.</p>
-          <span class="price-tag">Custom Quote</span>
+          <span class="price-tag" data-i18n="en">Custom Quote</span><span class="price-tag" data-i18n="nl">Op maat</span><span class="price-tag" data-i18n="ru">По запросу</span>
         </div></div>
       </div>
     </section>
@@ -1129,7 +1148,7 @@
         <div class="card-3d price-card rv"><div class="card-3d-inner">
           <span class="pbadge">Starter</span>
           <h3>&euro;2,500</h3>
-          <div class="psub">One-time</div>
+          <div class="psub" data-i18n="en">One-time</div><div class="psub" data-i18n="nl">Eenmalig</div><div class="psub" data-i18n="ru">Разовый платёж</div>
           <ul class="plist">
             <li data-i18n="en">Up to 5 pages</li><li data-i18n="nl">Tot 5 pagina's</li><li data-i18n="ru">До 5 страниц</li>
             <li data-i18n="en">Custom responsive design</li><li data-i18n="nl">Responsief maatwerk</li><li data-i18n="ru">Адаптивный дизайн</li>
@@ -1144,7 +1163,7 @@
         <div class="card-3d price-card feat rv"><div class="card-3d-inner">
           <span class="pbadge">Business</span>
           <h3>&euro;6,500</h3>
-          <div class="psub">Most Popular</div>
+          <div class="psub" data-i18n="en">Most Popular</div><div class="psub" data-i18n="nl">Meest populair</div><div class="psub" data-i18n="ru">Самый популярный</div>
           <ul class="plist">
             <li data-i18n="en">Up to 15 pages</li><li data-i18n="nl">Tot 15 pagina's</li><li data-i18n="ru">До 15 страниц</li>
             <li data-i18n="en">Premium custom design</li><li data-i18n="nl">Premium maatwerk</li><li data-i18n="ru">Премиум дизайн</li>
@@ -1160,7 +1179,7 @@
         <div class="card-3d price-card rv"><div class="card-3d-inner">
           <span class="pbadge">Enterprise</span>
           <h3>&euro;15,000+</h3>
-          <div class="psub">Full Scale</div>
+          <div class="psub" data-i18n="en">Full Scale</div><div class="psub" data-i18n="nl">Volledige schaal</div><div class="psub" data-i18n="ru">Полный масштаб</div>
           <ul class="plist">
             <li data-i18n="en">Unlimited pages</li><li data-i18n="nl">Onbeperkt pagina's</li><li data-i18n="ru">Без ограничений</li>
             <li data-i18n="en">E-commerce / Web app</li><li data-i18n="nl">E-commerce / Webapp</li><li data-i18n="ru">E-commerce / Приложение</li>
@@ -1241,21 +1260,21 @@
           <blockquote data-i18n="en">"They built a sales machine. Conversions jumped 280% in the first month."</blockquote>
           <blockquote data-i18n="nl">"Ze bouwden een verkoopmachine. Conversies stegen 280% in de eerste maand."</blockquote>
           <blockquote data-i18n="ru">"Они создали машину продаж. Конверсия выросла на 280% за первый месяц."</blockquote>
-          <div><div class="ta-name">Marco V.</div><div class="ta-role">CEO, TechStart NL</div></div>
+          <div><div class="ta-name">Marco V.</div><div class="ta-role" data-i18n="en">CEO, TechStart NL</div><div class="ta-role" data-i18n="nl">CEO, TechStart NL</div><div class="ta-role" data-i18n="ru">Генеральный директор, TechStart NL</div></div>
         </div></div>
         <div class="card-3d test-card rv"><div class="card-3d-inner">
           <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
           <blockquote data-i18n="en">"Understood our vision immediately. Delivered beyond expectations. AI features are a game-changer."</blockquote>
           <blockquote data-i18n="nl">"Begrepen onze visie onmiddellijk. Overtroffen verwachtingen. AI-functies zijn een doorbraak."</blockquote>
           <blockquote data-i18n="ru">"Сразу поняли нашу идею. Превзошли ожидания. AI-функции изменили правила игры."</blockquote>
-          <div><div class="ta-name">Sophie L.</div><div class="ta-role">Founder, Bloom Studio</div></div>
+          <div><div class="ta-name">Sophie L.</div><div class="ta-role" data-i18n="en">Founder, Bloom Studio</div><div class="ta-role" data-i18n="nl">Oprichter, Bloom Studio</div><div class="ta-role" data-i18n="ru">Основатель, Bloom Studio</div></div>
         </div></div>
         <div class="card-3d test-card rv"><div class="card-3d-inner">
           <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
           <blockquote data-i18n="en">"Best investment this year. New store generates 40% more revenue. Outstanding support."</blockquote>
           <blockquote data-i18n="nl">"Beste investering dit jaar. Nieuwe winkel genereert 40% meer omzet."</blockquote>
           <blockquote data-i18n="ru">"Лучшая инвестиция года. Новый магазин приносит на 40% больше выручки."</blockquote>
-          <div><div class="ta-name">Jan de Vries</div><div class="ta-role">Director, Fashion Hub</div></div>
+          <div><div class="ta-name">Jan de Vries</div><div class="ta-role" data-i18n="en">Director, Fashion Hub</div><div class="ta-role" data-i18n="nl">Directeur, Fashion Hub</div><div class="ta-role" data-i18n="ru">Директор, Fashion Hub</div></div>
         </div></div>
       </div>
     </section>
@@ -1302,46 +1321,45 @@
         <span data-i18n="nl">Laten we iets<br><span class="grad">groots bouwen.</span></span>
         <span data-i18n="ru">Давайте создадим<br><span class="grad">что-то великое.</span></span>
       </h2>
-      <form class="contact-form rv" onsubmit="return false;">
+      <form class="contact-form rv" id="contactForm">
         <div class="form-row">
-          <input type="text" placeholder="Name" required />
-          <input type="email" placeholder="Email" required />
+          <input type="text" id="f-name" data-ph-en="Name" data-ph-nl="Naam" data-ph-ru="Имя" required />
+          <input type="email" id="f-email" data-ph-en="Email" data-ph-nl="E-mail" data-ph-ru="Эл. почта" required />
         </div>
-        <select>
-          <option value="" disabled selected data-i18n="en">Select service</option>
-          <option value="" disabled selected data-i18n="nl">Selecteer dienst</option>
-          <option value="" disabled selected data-i18n="ru">Выберите услугу</option>
-          <option>Custom Website</option>
-          <option>E-Commerce</option>
-          <option>Web Application</option>
-          <option>AI Solution</option>
-          <option data-i18n="en">Other</option><option data-i18n="nl">Anders</option><option data-i18n="ru">Другое</option>
+        <select id="f-service">
+          <option value="" disabled selected data-ph-en="Select service" data-ph-nl="Selecteer dienst" data-ph-ru="Выберите услугу"></option>
+          <option value="website">Custom Website</option>
+          <option value="ecommerce">E-Commerce</option>
+          <option value="webapp">Web Application</option>
+          <option value="ai">AI Solution</option>
+          <option value="other" data-i18n="en">Other</option><option value="other" data-i18n="nl">Anders</option><option value="other" data-i18n="ru">Другое</option>
         </select>
-        <select>
-          <option value="" disabled selected data-i18n="en">Budget range</option>
-          <option value="" disabled selected data-i18n="nl">Budget</option>
-          <option value="" disabled selected data-i18n="ru">Бюджет</option>
+        <select id="f-budget">
+          <option value="" disabled selected data-ph-en="Budget range" data-ph-nl="Budget" data-ph-ru="Бюджет"></option>
           <option>&euro;2,500 - &euro;5,000</option>
           <option>&euro;5,000 - &euro;10,000</option>
           <option>&euro;10,000 - &euro;20,000</option>
           <option>&euro;20,000+</option>
         </select>
-        <textarea placeholder="Tell us about your project..." rows="4"></textarea>
+        <textarea id="f-msg" rows="4" data-ph-en="Tell us about your project..." data-ph-nl="Vertel ons over uw project..." data-ph-ru="Расскажите о вашем проекте..."></textarea>
         <button type="submit" class="btn btn-w" style="width:100%;justify-content:center" data-i18n="en">Send Message</button>
         <button type="submit" class="btn btn-w" style="width:100%;justify-content:center" data-i18n="nl">Bericht Versturen</button>
         <button type="submit" class="btn btn-w" style="width:100%;justify-content:center" data-i18n="ru">Отправить</button>
+        <p id="form-msg" style="text-align:center;font-size:14px;display:none"></p>
       </form>
     </section>
 
     <!-- FOOTER -->
     <footer>
       <div class="f-links">
-        <a href="#services">Services</a>
-        <a href="#work">Work</a>
-        <a href="#pricing">Pricing</a>
+        <a href="#services" data-i18n="en">Services</a><a href="#services" data-i18n="nl">Diensten</a><a href="#services" data-i18n="ru">Услуги</a>
+        <a href="#work" data-i18n="en">Work</a><a href="#work" data-i18n="nl">Werk</a><a href="#work" data-i18n="ru">Работы</a>
+        <a href="#pricing" data-i18n="en">Pricing</a><a href="#pricing" data-i18n="nl">Prijzen</a><a href="#pricing" data-i18n="ru">Цены</a>
         <a href="mailto:hello@vellumcadence.com">Email</a>
       </div>
-      <p>&copy; 2026 VellumCadence. All rights reserved.</p>
+      <p data-i18n="en">&copy; 2026 VellumCadence. All rights reserved.</p>
+      <p data-i18n="nl">&copy; 2026 VellumCadence. Alle rechten voorbehouden.</p>
+      <p data-i18n="ru">&copy; 2026 VellumCadence. Все права защищены.</p>
     </footer>
 
   </div>
@@ -1360,7 +1378,7 @@
       canvas.height = H * DPR;
       canvas.style.width = W + 'px';
       canvas.style.height = H + 'px';
-      ctx.scale(DPR, DPR);
+      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
     }
 
     function createParticles() {
@@ -1447,7 +1465,11 @@
     resize();
     createParticles();
     drawParticles();
-    window.addEventListener('resize', () => { resize(); createParticles(); });
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => { resize(); createParticles(); }, 200);
+    });
     window.addEventListener('mousemove', (e) => { mouse.x = e.clientX; mouse.y = e.clientY; });
     window.addEventListener('touchmove', (e) => { mouse.x = e.touches[0].clientX; mouse.y = e.touches[0].clientY; });
 
@@ -1512,7 +1534,8 @@
     // ===== i18n =====
     function setLang(lang) {
       document.documentElement.setAttribute('data-lang', lang);
-      // Update CSS visibility
+      document.documentElement.setAttribute('lang', lang);
+
       const style = document.getElementById('langStyle') || document.createElement('style');
       style.id = 'langStyle';
       style.textContent = `
@@ -1522,11 +1545,16 @@
         p[data-i18n="${lang}"], h2 span[data-i18n="${lang}"],
         h3[data-i18n="${lang}"] { display: block !important; }
         .cta-row [data-i18n="${lang}"], .badge [data-i18n="${lang}"],
-        a[data-i18n="${lang}"], button[data-i18n="${lang}"] { display: inline-flex !important; }
+        a[data-i18n="${lang}"], button[data-i18n="${lang}"],
+        span.price-tag[data-i18n="${lang}"] { display: inline-flex !important; }
         li[data-i18n="${lang}"] { display: list-item !important; }
         option[data-i18n="${lang}"] { display: block !important; }
         blockquote[data-i18n="${lang}"] { display: block !important; }
         h1 span[data-i18n="${lang}"] { display: inline !important; }
+        .ta-role[data-i18n="${lang}"] { display: block !important; }
+        .psub[data-i18n="${lang}"] { display: block !important; }
+        footer p[data-i18n="${lang}"] { display: block !important; }
+        .f-links a[data-i18n="${lang}"] { display: inline !important; }
       `;
       if (!style.parentNode) document.head.appendChild(style);
 
@@ -1534,6 +1562,17 @@
       document.querySelectorAll('.lang-btn').forEach(b => {
         b.classList.toggle('active', b.dataset.lang === lang);
       });
+
+      // Update placeholders
+      document.querySelectorAll('[data-ph-' + lang + ']').forEach(el => {
+        el.placeholder = el.getAttribute('data-ph-' + lang);
+      });
+
+      // Update select default options
+      document.querySelectorAll('option[data-ph-' + lang + ']').forEach(opt => {
+        opt.textContent = opt.getAttribute('data-ph-' + lang);
+      });
+
       localStorage.setItem('vc_lang', lang);
     }
 
@@ -1542,14 +1581,30 @@
     });
 
     // Init language
-    setLang(localStorage.getItem('vc_lang') || navigator.language.startsWith('nl') ? 'nl' : navigator.language.startsWith('ru') ? 'ru' : 'en');
-    // Fix: re-check
     const savedLang = localStorage.getItem('vc_lang');
-    if (savedLang) setLang(savedLang);
-    else {
-      const bl = navigator.language.slice(0,2);
+    if (savedLang) {
+      setLang(savedLang);
+    } else {
+      const bl = navigator.language.slice(0, 2);
       setLang(bl === 'nl' ? 'nl' : bl === 'ru' ? 'ru' : 'en');
     }
+
+    // ===== CONTACT FORM =====
+    document.getElementById('contactForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const msg = document.getElementById('form-msg');
+      const lang = localStorage.getItem('vc_lang') || 'en';
+      const msgs = {
+        en: 'Message sent! We will contact you within 24 hours.',
+        nl: 'Bericht verzonden! We nemen binnen 24 uur contact met u op.',
+        ru: 'Сообщение отправлено! Мы свяжемся с вами в течение 24 часов.'
+      };
+      msg.textContent = msgs[lang];
+      msg.style.display = 'block';
+      msg.style.color = '#22c55e';
+      this.reset();
+      setTimeout(() => { msg.style.display = 'none'; }, 5000);
+    });
 
     // ===== DYNAMIC DATA FROM ADMIN =====
     (function loadAdminData() {
