@@ -1699,67 +1699,7 @@
           });
         }
 
-        // --- Portfolio ---
-        if (data.portfolio && data.portfolio.length > 0) {
-          const grid = document.querySelector('.port-grid');
-          if (!grid) return;
-
-          grid.innerHTML = '';
-
-          data.portfolio.forEach(p => {
-            const tags = (p.tags || []).map(t => `<span>${t}</span>`).join('');
-            const bgColor = p.color || '#0d0d1a';
-
-            let preview = '';
-            if (p.image) {
-              preview = `<img src="${p.image}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover" />`;
-            } else {
-              preview = `
-                <div class="mockup-3d"><div class="mw"><div class="mb"><span class="md md-r"></span><span class="md md-y"></span><span class="md md-g"></span></div>
-                  <div class="mc" style="background:${bgColor}">
-                    <div class="ml ml-a" style="width:30%;height:7px"></div>
-                    <div class="ml" style="width:${60 + Math.random()*30}%"></div>
-                    <div class="ml" style="width:${40 + Math.random()*30}%"></div>
-                    <div class="ml" style="width:35%;height:18px;margin-top:6px;border-radius:9px;background:rgba(139,92,246,0.08)"></div>
-                  </div>
-                </div></div>`;
-            }
-
-            const card = document.createElement('div');
-            card.className = 'card-3d port-card rv vis';
-            card.innerHTML = `<div class="card-3d-inner">
-              <div class="port-preview" style="${p.image ? '' : ''}">${preview}</div>
-              <div class="port-info">
-                <h3>${p.name}</h3>
-                <p data-i18n="en">${p.descEn || ''}</p>
-                <p data-i18n="nl">${p.descNl || ''}</p>
-                <p data-i18n="ru">${p.descRu || ''}</p>
-                <div class="ptags">${tags}</div>
-              </div>
-            </div>`;
-            grid.appendChild(card);
-
-            // Re-init 3D tilt for new cards
-            const inner = card.querySelector('.card-3d-inner');
-            card.addEventListener('mousemove', (e) => {
-              const rect = card.getBoundingClientRect();
-              const x = e.clientX - rect.left;
-              const y = e.clientY - rect.top;
-              const cx = rect.width / 2;
-              const cy = rect.height / 2;
-              inner.style.transform = `perspective(800px) rotateX(${((cy-y)/cy)*6}deg) rotateY(${((x-cx)/cx)*6}deg) scale(1.01)`;
-              inner.style.setProperty('--mx', x + 'px');
-              inner.style.setProperty('--my', y + 'px');
-            });
-            card.addEventListener('mouseleave', () => {
-              inner.style.transform = 'perspective(800px) rotateX(0) rotateY(0) scale(1)';
-            });
-          });
-
-          // Re-apply language
-          const currentLang = localStorage.getItem('vc_lang') || 'en';
-          setLang(currentLang);
-        }
+        // Portfolio is managed directly in HTML — admin only controls pricing
       } catch(e) { console.log('Admin data load:', e); }
     })();
   </script>
