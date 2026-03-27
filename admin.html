@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — VellumCadence Studio</title>
+  <style>
+    :root {
+      --bg: #0a0a14;
+      --card: #111120;
+      --border: rgba(255,255,255,0.08);
+      --accent: #8b5cf6;
+      --accent-dim: rgba(139,92,246,0.15);
+      --text: #f5f5f7;
+      --dim: rgba(245,245,247,0.5);
+      --muted: rgba(245,245,247,0.3);
+      --green: #22c55e;
+      --red: #ef4444;
+      --radius: 12px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, "Helvetica Neue", sans-serif;
+      font-size: 15px;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+
+    /* Login */
+    #login-screen {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .login-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 40px;
+      width: 360px;
+      text-align: center;
+    }
+
+    .login-box h1 {
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .login-box .sub {
+      color: var(--dim);
+      font-size: 13px;
+      margin-bottom: 28px;
+    }
+
+    /* Admin */
+    #admin-screen { display: none; }
+
+    .admin-header {
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .admin-header h1 {
+      font-size: 17px;
+      font-weight: 600;
+    }
+
+    .admin-header .actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .admin-body {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 32px 24px;
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 32px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 10px;
+      padding: 4px;
+    }
+
+    .tab {
+      flex: 1;
+      background: none;
+      border: none;
+      color: var(--dim);
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tab.active {
+      background: var(--accent-dim);
+      color: var(--accent);
+    }
+
+    .tab:hover:not(.active) { color: var(--text); }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* Cards */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      margin-bottom: 16px;
+    }
+
+    .card h2 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .card .card-sub {
+      color: var(--dim);
+      font-size: 13px;
+      margin-bottom: 20px;
+    }
+
+    /* Inputs */
+    .field {
+      margin-bottom: 14px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--dim);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      border-color: var(--accent);
+    }
+
+    textarea { min-height: 60px; resize: vertical; }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .row-3 {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    /* Discount badge */
+    .discount-preview {
+      margin-top: 10px;
+      padding: 10px 16px;
+      background: rgba(34,197,94,0.06);
+      border: 1px solid rgba(34,197,94,0.15);
+      border-radius: 8px;
+      font-size: 14px;
+      display: none;
+    }
+
+    .discount-preview.show { display: flex; align-items: center; gap: 12px; }
+
+    .discount-preview .old {
+      text-decoration: line-through;
+      color: var(--muted);
+    }
+
+    .discount-preview .new {
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .discount-preview .badge {
+      background: var(--green);
+      color: #000;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 20px;
+      border-radius: 8px;
+      border: none;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .btn-primary:hover { background: #7c3aed; }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.06);
+      color: var(--dim);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      color: var(--text);
+      border-color: rgba(255,255,255,0.15);
+    }
+
+    .btn-danger {
+      background: rgba(239,68,68,0.1);
+      color: var(--red);
+      border: 1px solid rgba(239,68,68,0.2);
+    }
+
+    .btn-danger:hover { background: rgba(239,68,68,0.2); }
+
+    .btn-sm { padding: 6px 14px; font-size: 13px; }
+
+    /* Portfolio list */
+    .port-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .port-item:last-child { border-bottom: none; }
+
+    .port-thumb {
+      width: 80px;
+      height: 50px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    .port-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .port-meta { flex: 1; }
+    .port-meta h3 { font-size: 15px; font-weight: 600; }
+    .port-meta p { font-size: 12px; color: var(--dim); }
+
+    .port-actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      padding: 12px 20px;
+      border-radius: 10px;
+      background: var(--green);
+      color: #000;
+      font-weight: 600;
+      font-size: 14px;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.3s;
+      z-index: 999;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Add project modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-overlay.show { display: flex; }
+
+    .modal {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+      width: 520px;
+      max-width: 95vw;
+      max-height: 85vh;
+      overflow-y: auto;
+    }
+
+    .modal h2 {
+      font-size: 20px;
+      margin-bottom: 20px;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      margin-top: 20px;
+    }
+
+    /* Import/Export */
+    .io-area {
+      margin-top: 16px;
+    }
+
+    .io-area textarea {
+      min-height: 120px;
+      font-family: 'SF Mono', monospace;
+      font-size: 12px;
+    }
+
+    @media (max-width: 600px) {
+      .row, .row-3 { grid-template-columns: 1fr; }
+      .admin-body { padding: 20px 16px; }
+      .modal { padding: 24px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- LOGIN -->
+  <div id="login-screen">
+    <div class="login-box">
+      <h1>VellumCadence</h1>
+      <p class="sub">Studio Admin Panel</p>
+      <div class="field">
+        <input type="password" id="pwd" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')doLogin()" autofocus />
+      </div>
+      <div style="height:10px"></div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="doLogin()">Sign In</button>
+      <p id="login-err" style="color:var(--red);font-size:13px;margin-top:10px;display:none">Wrong password</p>
+    </div>
+  </div>
+
+  <!-- ADMIN -->
+  <div id="admin-screen">
+    <div class="admin-header">
+      <h1>Studio Admin</h1>
+      <div class="actions">
+        <a href="index.html" class="btn btn-secondary btn-sm" target="_blank">View Site</a>
+        <button class="btn btn-secondary btn-sm" onclick="doLogout()">Logout</button>
+      </div>
+    </div>
+
+    <div class="admin-body">
+      <div class="tabs">
+        <button class="tab active" data-tab="pricing">Pricing</button>
+        <button class="tab" data-tab="portfolio">Portfolio</button>
+        <button class="tab" data-tab="settings">Settings</button>
+      </div>
+
+      <!-- PRICING TAB -->
+      <div class="tab-content active" id="tab-pricing">
+        <div class="card" id="card-starter">
+          <h2>Starter</h2>
+          <p class="card-sub">Basic package for small businesses</p>
+          <div class="row-3 row">
+            <div class="field">
+              <label>Price (&euro;)</label>
+              <input type="number" id="starter-price" value="2500" min="0" step="100" oninput="updateDiscount('starter')" />
+            </div>
+            <div class="field">
+              <label>Original Price (&euro;)</label>
+              <input type="number" id="starter-original" value="0" min="0" step="100" oninput="updateDiscount('starter')" />
+            </div>
+            <div class="field">
+              <label>Label</label>
+              <input type="text" id="starter-label" value="One-time" />
+            </div>
+          </div>
+          <div class="discount-preview" id="starter-discount">
+            <span class="old"></span>
+            <span class="new"></span>
+            <span class="badge"></span>
+          </div>
+        </div>
+
+        <div class="card" id="card-business">
+          <h2>Business</h2>
+          <p class="card-sub">Most popular — growing brands</p>
+          <div class="row-3 row">
+            <div class="field">
+              <label>Price (&euro;)</label>
+              <input type="number" id="business-price" value="6500" min="0" step="100" oninput="updateDiscount('business')" />
+            </div>
+            <div class="field">
+              <label>Original Price (&euro;)</label>
+              <input type="number" id="business-original" value="0" min="0" step="100" oninput="updateDiscount('business')" />
+            </div>
+            <div class="field">
+              <label>Label</label>
+              <input type="text" id="business-label" value="Most Popular" />
+            </div>
+          </div>
+          <div class="discount-preview" id="business-discount">
+            <span class="old"></span>
+            <span class="new"></span>
+            <span class="badge"></span>
+          </div>
+        </div>
+
+        <div class="card" id="card-enterprise">
+          <h2>Enterprise</h2>
+          <p class="card-sub">Full scale — large projects</p>
+          <div class="row-3 row">
+            <div class="field">
+              <label>Price (&euro;)</label>
+              <input type="number" id="enterprise-price" value="15000" min="0" step="500" oninput="updateDiscount('enterprise')" />
+            </div>
+            <div class="field">
+              <label>Original Price (&euro;)</label>
+              <input type="number" id="enterprise-original" value="0" min="0" step="500" oninput="updateDiscount('enterprise')" />
+            </div>
+            <div class="field">
+              <label>Label</label>
+              <input type="text" id="enterprise-label" value="Full Scale" />
+            </div>
+          </div>
+          <div class="discount-preview" id="enterprise-discount">
+            <span class="old"></span>
+            <span class="new"></span>
+            <span class="badge"></span>
+          </div>
+        </div>
+
+        <button class="btn btn-primary" onclick="savePricing()" style="margin-top:8px">Save Pricing</button>
+      </div>
+
+      <!-- PORTFOLIO TAB -->
+      <div class="tab-content" id="tab-portfolio">
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+            <div>
+              <h2>Projects</h2>
+              <p class="card-sub" style="margin-bottom:0">Manage your portfolio showcase</p>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="openAddProject()">+ Add Project</button>
+          </div>
+          <div id="portfolio-list"></div>
+          <p id="portfolio-empty" style="color:var(--muted);text-align:center;padding:20px;display:none">No projects yet. Click "Add Project" to create one.</p>
+        </div>
+      </div>
+
+      <!-- SETTINGS TAB -->
+      <div class="tab-content" id="tab-settings">
+        <div class="card">
+          <h2>Change Password</h2>
+          <p class="card-sub">Update your admin panel password</p>
+          <div class="row">
+            <div class="field">
+              <label>New Password</label>
+              <input type="password" id="new-pwd" placeholder="Enter new password" />
+            </div>
+            <div class="field">
+              <label>Confirm</label>
+              <input type="password" id="new-pwd2" placeholder="Confirm password" />
+            </div>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="changePassword()">Update Password</button>
+        </div>
+
+        <div class="card">
+          <h2>Export / Import Data</h2>
+          <p class="card-sub">Backup or transfer settings to another device</p>
+          <div style="display:flex;gap:10px;margin-bottom:12px">
+            <button class="btn btn-secondary btn-sm" onclick="exportData()">Export JSON</button>
+            <button class="btn btn-secondary btn-sm" onclick="document.getElementById('import-file').click()">Import JSON</button>
+            <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)" />
+          </div>
+          <div class="io-area">
+            <textarea id="export-area" placeholder="Exported data will appear here..." readonly></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADD/EDIT PROJECT MODAL -->
+  <div class="modal-overlay" id="project-modal">
+    <div class="modal">
+      <h2 id="modal-title">Add Project</h2>
+      <input type="hidden" id="edit-idx" value="-1" />
+      <div class="field">
+        <label>Project Name</label>
+        <input type="text" id="proj-name" placeholder="e.g. Cryptority" />
+      </div>
+      <div class="row">
+        <div class="field">
+          <label>Category</label>
+          <select id="proj-category">
+            <option>Landing Page</option>
+            <option>Business Website</option>
+            <option>E-Commerce</option>
+            <option>Web Application</option>
+            <option>AI Solution</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Industry</label>
+          <input type="text" id="proj-industry" placeholder="e.g. Finance, Fashion" />
+        </div>
+      </div>
+      <div class="field">
+        <label>Description (EN)</label>
+        <input type="text" id="proj-desc-en" placeholder="Short description in English" />
+      </div>
+      <div class="field">
+        <label>Description (NL)</label>
+        <input type="text" id="proj-desc-nl" placeholder="Korte beschrijving in het Nederlands" />
+      </div>
+      <div class="field">
+        <label>Description (RU)</label>
+        <input type="text" id="proj-desc-ru" placeholder="Краткое описание на русском" />
+      </div>
+      <div class="field">
+        <label>Tags (comma-separated)</label>
+        <input type="text" id="proj-tags" placeholder="e.g. Dark UI, React, Shopify" />
+      </div>
+      <div class="field">
+        <label>Screenshot URL (optional)</label>
+        <input type="text" id="proj-image" placeholder="https://... or leave empty for placeholder" />
+      </div>
+      <div class="field">
+        <label>Project URL (optional)</label>
+        <input type="text" id="proj-url" placeholder="https://..." />
+      </div>
+      <div class="field">
+        <label>Color Theme</label>
+        <div class="row" style="gap:8px">
+          <input type="color" id="proj-color" value="#0d0d1a" style="width:50px;height:36px;padding:2px;cursor:pointer" />
+          <input type="text" id="proj-color-text" value="#0d0d1a" oninput="document.getElementById('proj-color').value=this.value" style="flex:1" />
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="saveProject()">Save Project</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ===== DATA STORE =====
+    const STORAGE_KEY = 'vc_studio_data';
+    const PWD_KEY = 'vc_studio_pwd';
+
+    const DEFAULT_DATA = {
+      pricing: {
+        starter:    { price: 2500, original: 0, label: 'One-time' },
+        business:   { price: 6500, original: 0, label: 'Most Popular' },
+        enterprise: { price: 15000, original: 0, label: 'Full Scale' },
+      },
+      portfolio: [
+        { name: 'Cryptority', category: 'Landing Page', industry: 'Blockchain', descEn: 'Blockchain platform with real-time data', descNl: 'Blockchain platform met real-time data', descRu: 'Блокчейн-платформа с данными в реальном времени', tags: ['Landing', 'Web3', 'Dark UI'], image: '', url: '', color: '#0d0d1a' },
+        { name: 'AutoEurope', category: 'Business Website', industry: 'Automotive', descEn: 'Car dealership with lead generation', descNl: 'Autodealer met leadgeneratie', descRu: 'Автодилер с лидогенерацией', tags: ['Business', 'Auto', 'CMS'], image: '', url: '', color: '#111118' },
+        { name: 'FinTech Dashboard', category: 'Web Application', industry: 'Finance', descEn: 'Analytics platform with AI insights', descNl: 'Analyseplatform met AI-inzichten', descRu: 'Аналитика с AI-инсайтами', tags: ['Web App', 'Finance', 'AI'], image: '', url: '', color: '#0f0f18' },
+        { name: 'Fashion Store', category: 'E-Commerce', industry: 'Fashion', descEn: 'Shopify store with iDEAL payments', descNl: 'Shopify winkel met iDEAL', descRu: 'Shopify-магазин с iDEAL', tags: ['E-Commerce', 'Shopify', 'Fashion'], image: '', url: '', color: '#0a0810' },
+      ]
+    };
+
+    function getData() {
+      try {
+        const d = JSON.parse(localStorage.getItem(STORAGE_KEY));
+        return d || JSON.parse(JSON.stringify(DEFAULT_DATA));
+      } catch { return JSON.parse(JSON.stringify(DEFAULT_DATA)); }
+    }
+
+    function saveData(data) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
+
+    function getPassword() {
+      return localStorage.getItem(PWD_KEY) || 'admin';
+    }
+
+    // ===== AUTH =====
+    function doLogin() {
+      const pwd = document.getElementById('pwd').value;
+      if (pwd === getPassword()) {
+        sessionStorage.setItem('vc_auth', '1');
+        showAdmin();
+      } else {
+        document.getElementById('login-err').style.display = 'block';
+      }
+    }
+
+    function doLogout() {
+      sessionStorage.removeItem('vc_auth');
+      location.reload();
+    }
+
+    function showAdmin() {
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('admin-screen').style.display = 'block';
+      loadPricing();
+      renderPortfolio();
+    }
+
+    // ===== PRICING =====
+    function loadPricing() {
+      const data = getData();
+      ['starter', 'business', 'enterprise'].forEach(tier => {
+        const p = data.pricing[tier] || {};
+        document.getElementById(tier + '-price').value = p.price || 0;
+        document.getElementById(tier + '-original').value = p.original || 0;
+        document.getElementById(tier + '-label').value = p.label || '';
+        updateDiscount(tier);
+      });
+    }
+
+    function updateDiscount(tier) {
+      const price = parseInt(document.getElementById(tier + '-price').value) || 0;
+      const original = parseInt(document.getElementById(tier + '-original').value) || 0;
+      const el = document.getElementById(tier + '-discount');
+
+      if (original > price && original > 0) {
+        const pct = Math.round((1 - price / original) * 100);
+        el.querySelector('.old').textContent = '€' + original.toLocaleString();
+        el.querySelector('.new').textContent = '€' + price.toLocaleString();
+        el.querySelector('.badge').textContent = '-' + pct + '%';
+        el.classList.add('show');
+      } else {
+        el.classList.remove('show');
+      }
+    }
+
+    function savePricing() {
+      const data = getData();
+      ['starter', 'business', 'enterprise'].forEach(tier => {
+        data.pricing[tier] = {
+          price: parseInt(document.getElementById(tier + '-price').value) || 0,
+          original: parseInt(document.getElementById(tier + '-original').value) || 0,
+          label: document.getElementById(tier + '-label').value,
+        };
+      });
+      saveData(data);
+      toast('Pricing saved!');
+    }
+
+    // ===== PORTFOLIO =====
+    function renderPortfolio() {
+      const data = getData();
+      const list = document.getElementById('portfolio-list');
+      const empty = document.getElementById('portfolio-empty');
+
+      if (data.portfolio.length === 0) {
+        list.innerHTML = '';
+        empty.style.display = 'block';
+        return;
+      }
+
+      empty.style.display = 'none';
+      list.innerHTML = data.portfolio.map((p, i) => `
+        <div class="port-item">
+          <div class="port-thumb" style="background:${p.color || '#111'}">
+            ${p.image ? `<img src="${p.image}" alt="${p.name}" />` : p.name.charAt(0)}
+          </div>
+          <div class="port-meta">
+            <h3>${p.name}</h3>
+            <p>${p.category} · ${p.industry} · ${p.tags.join(', ')}</p>
+          </div>
+          <div class="port-actions">
+            <button class="btn btn-secondary btn-sm" onclick="editProject(${i})">Edit</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteProject(${i})">Del</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function openAddProject() {
+      document.getElementById('edit-idx').value = -1;
+      document.getElementById('modal-title').textContent = 'Add Project';
+      document.getElementById('proj-name').value = '';
+      document.getElementById('proj-category').value = 'Landing Page';
+      document.getElementById('proj-industry').value = '';
+      document.getElementById('proj-desc-en').value = '';
+      document.getElementById('proj-desc-nl').value = '';
+      document.getElementById('proj-desc-ru').value = '';
+      document.getElementById('proj-tags').value = '';
+      document.getElementById('proj-image').value = '';
+      document.getElementById('proj-url').value = '';
+      document.getElementById('proj-color').value = '#0d0d1a';
+      document.getElementById('proj-color-text').value = '#0d0d1a';
+      document.getElementById('project-modal').classList.add('show');
+    }
+
+    function editProject(idx) {
+      const data = getData();
+      const p = data.portfolio[idx];
+      document.getElementById('edit-idx').value = idx;
+      document.getElementById('modal-title').textContent = 'Edit Project';
+      document.getElementById('proj-name').value = p.name;
+      document.getElementById('proj-category').value = p.category;
+      document.getElementById('proj-industry').value = p.industry;
+      document.getElementById('proj-desc-en').value = p.descEn;
+      document.getElementById('proj-desc-nl').value = p.descNl || '';
+      document.getElementById('proj-desc-ru').value = p.descRu || '';
+      document.getElementById('proj-tags').value = p.tags.join(', ');
+      document.getElementById('proj-image').value = p.image || '';
+      document.getElementById('proj-url').value = p.url || '';
+      document.getElementById('proj-color').value = p.color || '#0d0d1a';
+      document.getElementById('proj-color-text').value = p.color || '#0d0d1a';
+      document.getElementById('project-modal').classList.add('show');
+    }
+
+    function closeModal() {
+      document.getElementById('project-modal').classList.remove('show');
+    }
+
+    function saveProject() {
+      const name = document.getElementById('proj-name').value.trim();
+      if (!name) return toast('Name is required');
+
+      const project = {
+        name,
+        category: document.getElementById('proj-category').value,
+        industry: document.getElementById('proj-industry').value.trim(),
+        descEn: document.getElementById('proj-desc-en').value.trim(),
+        descNl: document.getElementById('proj-desc-nl').value.trim(),
+        descRu: document.getElementById('proj-desc-ru').value.trim(),
+        tags: document.getElementById('proj-tags').value.split(',').map(t => t.trim()).filter(Boolean),
+        image: document.getElementById('proj-image').value.trim(),
+        url: document.getElementById('proj-url').value.trim(),
+        color: document.getElementById('proj-color').value,
+      };
+
+      const data = getData();
+      const idx = parseInt(document.getElementById('edit-idx').value);
+
+      if (idx >= 0) {
+        data.portfolio[idx] = project;
+      } else {
+        data.portfolio.push(project);
+      }
+
+      saveData(data);
+      renderPortfolio();
+      closeModal();
+      toast(idx >= 0 ? 'Project updated!' : 'Project added!');
+    }
+
+    function deleteProject(idx) {
+      if (!confirm('Delete this project?')) return;
+      const data = getData();
+      data.portfolio.splice(idx, 1);
+      saveData(data);
+      renderPortfolio();
+      toast('Project deleted');
+    }
+
+    // ===== SETTINGS =====
+    function changePassword() {
+      const p1 = document.getElementById('new-pwd').value;
+      const p2 = document.getElementById('new-pwd2').value;
+      if (!p1 || p1.length < 4) return toast('Password must be at least 4 characters');
+      if (p1 !== p2) return toast('Passwords do not match');
+      localStorage.setItem(PWD_KEY, p1);
+      document.getElementById('new-pwd').value = '';
+      document.getElementById('new-pwd2').value = '';
+      toast('Password updated!');
+    }
+
+    function exportData() {
+      const data = getData();
+      const json = JSON.stringify(data, null, 2);
+      document.getElementById('export-area').value = json;
+      navigator.clipboard.writeText(json).then(() => toast('Copied to clipboard!')).catch(() => {});
+    }
+
+    function importData(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const data = JSON.parse(e.target.result);
+          if (data.pricing && data.portfolio) {
+            saveData(data);
+            loadPricing();
+            renderPortfolio();
+            toast('Data imported!');
+          } else {
+            toast('Invalid format');
+          }
+        } catch { toast('Invalid JSON file'); }
+      };
+      reader.readAsText(file);
+      event.target.value = '';
+    }
+
+    // ===== TOAST =====
+    function toast(msg) {
+      const el = document.getElementById('toast');
+      el.textContent = msg;
+      el.classList.add('show');
+      setTimeout(() => el.classList.remove('show'), 2500);
+    }
+
+    // ===== TABS =====
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+      });
+    });
+
+    // Color sync
+    document.getElementById('proj-color').addEventListener('input', (e) => {
+      document.getElementById('proj-color-text').value = e.target.value;
+    });
+
+    // ===== INIT =====
+    if (sessionStorage.getItem('vc_auth') === '1') {
+      showAdmin();
+    }
+  </script>
+</body>
+</html>
