@@ -1700,6 +1700,11 @@
         }
 
         // Portfolio is managed directly in HTML — admin only controls pricing
+        // One-time cleanup of stale portfolio data
+        if (data.portfolio) {
+          delete data.portfolio;
+          localStorage.setItem('vc_studio_data', JSON.stringify(data));
+        }
       } catch(e) { console.log('Admin data load:', e); }
     })();
   </script>
